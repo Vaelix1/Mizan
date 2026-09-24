@@ -1,0 +1,51 @@
+name: Takvim kontrolü
+
+# TOGÜ akademik takvim sayfasını haftada bir denetler. Yeni yılın takvimi
+# yayımlandıysa ya da sitedeki yılın PDF'i değiştiyse bir issue açar.
+# Tarihleri siteye kendisi yazmaz; güncellemeyi bir insan yapar (bkz. README).
+
+on:
+  schedule:
+    - cron: '0 6 * * 1'   # her pazartesi 06:00 UTC (09:00 Türkiye)
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  kontrol:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: TOGÜ takvim sayfasını denetle
+        id: kontrol
+        run: |
+          set +e
+          python tools/takvim_kontrol.py --rapor rapor.md
+          echo "kod=$?" >> "$GITHUB_OUTPUT"
+
+      - name: Güncelleme gerekiyorsa issue aç
+        if: steps.kontrol.outputs.kod == '10'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          baslik="$(head -n 1 rapor.md | sed 's/^# //')"
+          acik="$(gh issue list --state open --search "in:title \"$baslik\"" --json title --jq "[.[] | select(.title == \"$baslik\")] | length")"
+          if [ "$acik" != "0" ]; then
+            echo "Aynı başlıkla açık bir issue zaten var; yenisi açılmadı."
+          else
+            gh issue create --title "$baslik" --body-file rapor.md
+          fi
+
+      - name: Denetim hata verdiyse işi başarısız say
+        if: steps.kontrol.outputs.kod == '1'
+        run: |
+          echo "Takvim sayfası okunamadı ya da yapısı değişti. Günlüğe bak."
+          exit 1

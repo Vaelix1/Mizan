@@ -1,0 +1,1030 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Mizan</title>
+<meta name="description" content="Mizan — TOGÜ Muhasebe ve Vergi Uygulamaları programına yeni başlayanlar için ilk dönem çalışma kiti: Genel Muhasebe I haftalık rehberi, hesap planı kartları, yevmiye alıştırmaları, not ve KDV hesaplayıcı, 2026-2027 takvimi.">
+<style>
+[hidden]{display:none!important}
+:root{
+  --bg:#F2F5F3; --surface:#FFFFFF; --surface-2:#E8EEEB; --ink:#15201C; --ink-2:#4A5B55; --ink-3:#6F807A;
+  --rule:#D2DCD7; --rule-strong:#B3C2BC;
+  --accent:#1B6B50; --accent-ink:#FFFFFF; --accent-soft:#DDEEE6;
+  --debit:#1F4E8C; --debit-soft:#E4ECF7; --credit:#A2382A; --credit-soft:#F7E6E2;
+  --warn:#6F4B00; --warn-soft:#FBEFD2; --ok:#17613F; --ok-soft:#DDEEE6; --err:#A2382A; --err-soft:#F7E6E2;
+  --serif:"Iowan Old Style","Palatino Linotype",Palatino,"Book Antiqua",Georgia,serif;
+  --sans:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  --mono:ui-monospace,"Cascadia Mono","SF Mono",Consolas,"Liberation Mono",monospace;
+  --r:10px;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#0E1412; --surface:#151D1A; --surface-2:#1C2622; --ink:#E3EBE7; --ink-2:#A7B6B0; --ink-3:#7F908A;
+    --rule:#27332E; --rule-strong:#3A4843;
+    --accent:#5DC29C; --accent-ink:#06231A; --accent-soft:#163529;
+    --debit:#8DB6EE; --debit-soft:#152539; --credit:#EE9384; --credit-soft:#3A1C17;
+    --warn:#E8C27A; --warn-soft:#33270F; --ok:#6FD0A8; --ok-soft:#163529; --err:#EE9384; --err-soft:#3A1C17;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0E1412; --surface:#151D1A; --surface-2:#1C2622; --ink:#E3EBE7; --ink-2:#A7B6B0; --ink-3:#7F908A;
+  --rule:#27332E; --rule-strong:#3A4843;
+  --accent:#5DC29C; --accent-ink:#06231A; --accent-soft:#163529;
+  --debit:#8DB6EE; --debit-soft:#152539; --credit:#EE9384; --credit-soft:#3A1C17;
+  --warn:#E8C27A; --warn-soft:#33270F; --ok:#6FD0A8; --ok-soft:#163529; --err:#EE9384; --err-soft:#3A1C17;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 var(--sans);-webkit-text-size-adjust:100%}
+a{color:var(--accent)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.wrap{max-width:1080px;margin:0 auto;padding-inline:20px}
+h1,h2,h3{font-family:var(--serif);font-weight:600;line-height:1.25;text-wrap:balance;margin:0}
+h2{font-size:1.65rem}
+h3{font-size:1.15rem}
+p{margin:0}
+.num,.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.muted{color:var(--ink-2)}
+.small{font-size:.875rem}
+.eyebrow{font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);font-weight:600}
+.stack{display:flex;flex-direction:column;gap:14px}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+
+/* ---------- 1. ÜST BAR VE GEZİNME ---------- */
+.top{border-bottom:1px solid var(--rule);background:var(--surface)}
+.top .wrap{display:flex;flex-wrap:wrap;gap:12px 24px;align-items:center;justify-content:space-between;padding-block:16px}
+.brand{display:flex;align-items:center;gap:14px}
+.mark{display:grid;grid-template-columns:auto auto auto;align-items:center;gap:4px;font:600 .8rem/1 var(--mono);padding:7px 9px;border:1.5px solid var(--ink);border-radius:6px}
+.mark .d{color:var(--debit)} .mark .c{color:var(--credit)}
+.brand h1{font-size:1.9rem;letter-spacing:.01em}
+.brand p{font-size:.85rem;color:var(--ink-2)}
+.campus{display:flex;align-items:center;gap:8px;font-size:.875rem;color:var(--ink-2)}
+select,input,button{font:inherit;color:inherit}
+select,input[type=text],input[type=number],input[type=search]{background:var(--surface);border:1px solid var(--rule-strong);border-radius:8px;padding:7px 10px;min-height:38px;max-width:100%}
+button{cursor:pointer;background:var(--surface);border:1px solid var(--rule-strong);border-radius:8px;padding:7px 14px;min-height:38px}
+button:hover{border-color:var(--ink-3)}
+button.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+button.ghost{border-color:transparent;background:transparent;color:var(--ink-2)}
+nav.tabs{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:1px solid var(--rule)}
+nav.tabs .wrap{display:flex;gap:4px;overflow-x:auto;scrollbar-width:thin;padding-block:6px}
+nav.tabs button{border:0;background:transparent;white-space:nowrap;color:var(--ink-2);border-radius:7px;padding:8px 12px}
+nav.tabs button[aria-current="page"]{background:var(--surface);color:var(--ink);box-shadow:inset 0 -2px 0 var(--accent)}
+main .wrap{padding-block:28px 56px}
+section.page{display:flex;flex-direction:column;gap:22px}
+.lead{max-width:68ch;color:var(--ink-2)}
+
+/* ---------- 2. KART, ROZET, UYARI ---------- */
+.panel{background:var(--surface);border:1px solid var(--rule);border-radius:var(--r);padding:18px 20px}
+.grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(min(100%,280px),1fr))}
+.grid2{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr))}
+.chip{display:inline-flex;align-items:center;gap:6px;font-size:.78rem;line-height:1.2;padding:4px 9px;border-radius:999px;background:var(--surface-2);color:var(--ink-2);border:1px solid transparent;white-space:nowrap}
+button.chip{min-height:0;cursor:pointer}
+button.chip:hover{border-color:var(--rule-strong)}
+.chip.dr{background:var(--debit-soft);color:var(--debit)}
+.chip.cr{background:var(--credit-soft);color:var(--credit)}
+.chip.ok{background:var(--ok-soft);color:var(--ok)}
+.chip.warn{background:var(--warn-soft);color:var(--warn)}
+.chip.acc{background:var(--accent-soft);color:var(--accent)}
+.note{border-radius:var(--r);padding:14px 16px;font-size:.93rem;line-height:1.55}
+.note.warn{background:var(--warn-soft);color:var(--warn)}
+.note.ok{background:var(--ok-soft);color:var(--ok)}
+.note.err{background:var(--err-soft);color:var(--err)}
+.note.info{background:var(--surface-2);color:var(--ink-2)}
+.note strong{color:inherit}
+.kv{display:grid;grid-template-columns:max-content 1fr;gap:6px 16px;font-size:.93rem}
+.kv dt{color:var(--ink-3)} .kv dd{margin:0}
+
+/* ---------- 3. BU HAFTA ---------- */
+.today{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 18px}
+.today h2{font-size:clamp(1.6rem,3.2vw,2.3rem)}
+.focus{border:1px solid var(--rule);border-radius:var(--r);background:var(--surface);overflow:hidden}
+.focus .hd{padding:16px 20px;border-bottom:1px solid var(--rule);display:flex;flex-wrap:wrap;gap:8px 16px;align-items:baseline;justify-content:space-between}
+.focus .bd{padding:16px 20px;display:flex;flex-direction:column;gap:12px}
+.focus h3{font-size:1.35rem}
+ul.clean{list-style:none;margin:0;padding:0}
+ul.ticks li{position:relative;padding-left:20px;margin-bottom:4px}
+ul.ticks li::before{content:"";position:absolute;left:3px;top:.62em;width:7px;height:7px;border-radius:2px;background:var(--accent)}
+.due li{display:grid;grid-template-columns:1fr auto;gap:4px 12px;padding:10px 0;border-bottom:1px dashed var(--rule)}
+.due li:last-child{border-bottom:0}
+.due .when{font-size:.85rem;color:var(--ink-3)}
+.courses li{display:grid;grid-template-columns:minmax(0,11rem) 1fr;gap:4px 14px;padding:9px 0;border-bottom:1px dashed var(--rule)}
+.courses li:last-child{border-bottom:0}
+.courses .c{font-weight:600;font-size:.93rem}
+.progress{height:8px;border-radius:99px;background:var(--surface-2);overflow:hidden}
+.progress span{display:block;height:100%;background:var(--accent)}
+
+/* ---------- 4. HAFTALIK PLAN ---------- */
+.weeks{border:1px solid var(--rule);border-radius:var(--r);background:var(--surface);overflow:hidden}
+.wk{display:grid;grid-template-columns:4.2rem minmax(0,1fr);border-bottom:1px solid var(--rule)}
+.wk:last-child{border-bottom:0}
+.wk .n{padding:14px 0 14px 16px;font:600 1.4rem/1 var(--serif);color:var(--ink-3)}
+.wk .n small{display:block;font:500 .7rem/1.4 var(--sans);letter-spacing:.06em;text-transform:uppercase;margin-top:4px}
+.wk .b{padding:14px 18px 14px 4px;display:flex;flex-direction:column;gap:8px}
+.wk .t{font-weight:600}
+.wk .d{font-size:.83rem;color:var(--ink-3)}
+.wk.now{background:var(--accent-soft)}
+.wk.now .n{color:var(--accent)}
+.wk.exam{background:var(--surface-2)}
+.wk details summary{cursor:pointer;font-size:.85rem;color:var(--ink-2)}
+.wk details ul{margin:6px 0 0;padding-left:18px;font-size:.9rem;color:var(--ink-2)}
+
+/* ---------- 5. HESAP KARTLARI ---------- */
+.decode{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;border:1px solid var(--rule);border-radius:var(--r);overflow:hidden;background:var(--surface)}
+.decode div{padding:14px 16px;border-right:1px solid var(--rule)}
+.decode div:last-child{border-right:0}
+.decode .code{font:600 1.7rem/1 var(--mono);letter-spacing:.04em}
+.decode .code u{text-decoration:none;color:var(--accent)}
+.decode .lbl{font-size:.8rem;color:var(--ink-3);margin-top:6px}
+.decode .val{font-weight:600;font-size:.95rem}
+.acct{background:var(--surface);border:1px solid var(--rule);border-radius:var(--r);padding:16px 18px;display:flex;flex-direction:column;gap:10px}
+.acct .top2{display:flex;align-items:baseline;gap:12px}
+.acct .code{font:600 1.5rem/1 var(--mono);color:var(--ink)}
+.acct .name{font-weight:600;line-height:1.3}
+.acct .grp{font-size:.8rem;color:var(--ink-3)}
+.acct p{font-size:.92rem;color:var(--ink-2)}
+.acct.flash{outline:2px solid var(--accent);outline-offset:2px}
+.filters{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.filters input{flex:1 1 220px}
+
+/* ---------- 6. YEVMİYE ---------- */
+.steps{display:flex;flex-wrap:wrap;gap:6px}
+.steps button{min-height:34px;padding:5px 11px;font-size:.85rem;font-family:var(--mono)}
+.steps button[aria-current="step"]{border-color:var(--ink);font-weight:700}
+.steps button.done{background:var(--ok-soft);color:var(--ok);border-color:transparent}
+.q{font-size:1.05rem;line-height:1.6;max-width:70ch}
+.entry{display:flex;flex-direction:column;gap:8px}
+.erow{display:grid;grid-template-columns:minmax(0,2.2fr) minmax(0,.9fr) minmax(0,1.1fr) auto;gap:8px;align-items:center}
+.erow.head{font-size:.75rem;color:var(--ink-3);letter-spacing:.06em;text-transform:uppercase}
+.erow select,.erow input{width:100%}
+.erow input{font-family:var(--mono);text-align:right}
+.erow .x{min-height:38px;padding:0 10px;color:var(--ink-3)}
+.totals{display:flex;flex-wrap:wrap;gap:8px 20px;font-size:.88rem;color:var(--ink-2)}
+.totals b{font-family:var(--mono);font-weight:600}
+.ledger-wrap{overflow-x:auto}
+table.jr{border-collapse:collapse;width:100%;min-width:420px;font-size:.92rem;background:var(--surface)}
+table.jr caption{caption-side:top;text-align:center;font:600 .8rem/1 var(--mono);color:var(--ink-3);padding:0 0 8px;letter-spacing:.06em}
+table.jr td{padding:5px 8px;border-bottom:1px solid var(--rule)}
+table.jr td.num{text-align:right;width:8.5rem;font-family:var(--mono);font-variant-numeric:tabular-nums}
+table.jr tr.dr td.acc{color:var(--debit)}
+table.jr tr.cr td.acc{color:var(--credit);padding-left:2.6rem}
+table.jr tr.exp td{font-style:italic;color:var(--ink-3);border-bottom:2px solid var(--rule-strong);font-size:.85rem}
+table.mz{border-collapse:collapse;width:100%;min-width:560px;font-size:.9rem;background:var(--surface)}
+table.mz th,table.mz td{padding:7px 10px;border-bottom:1px solid var(--rule);text-align:right}
+table.mz th{font-size:.75rem;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);font-weight:600}
+table.mz th:first-child,table.mz td:first-child{text-align:left}
+table.mz td.num{font-family:var(--mono);font-variant-numeric:tabular-nums}
+table.mz tfoot td{font-weight:700;border-top:2px solid var(--ink);border-bottom:0}
+.inline-confirm{display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:.9rem}
+
+/* ---------- 7. ARAÇLAR VE TAKVİM ---------- */
+.form{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(min(100%,180px),1fr))}
+.form label{display:flex;flex-direction:column;gap:5px;font-size:.85rem;color:var(--ink-2)}
+.result{font:600 2.2rem/1.1 var(--serif)}
+.err-text{font-size:.82rem;color:var(--err);min-height:1.2em}
+table.grades{border-collapse:collapse;width:100%;font-size:.9rem}
+table.grades td,table.grades th{padding:5px 8px;border-bottom:1px solid var(--rule);text-align:left}
+table.grades th{font-size:.75rem;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3)}
+.cal li{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:4px 14px;align-items:start;padding:12px 0;border-bottom:1px solid var(--rule)}
+.cal li:last-child{border-bottom:0}
+.cal .dt{font:600 .85rem/1.35 var(--mono);min-width:8.5rem;color:var(--ink-2)}
+.cal .tx{display:flex;flex-direction:column;gap:3px}
+.cal .tx small{color:var(--ink-3)}
+.cal li.past{opacity:.62}
+.cal label{display:inline-flex;gap:6px;align-items:center;font-size:.85rem;color:var(--ink-2);cursor:pointer}
+.src li{padding:14px 0;border-bottom:1px solid var(--rule);display:flex;flex-direction:column;gap:6px}
+.src li:last-child{border-bottom:0}
+.src .uses{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:8px 18px;font-size:.88rem}
+footer{border-top:1px solid var(--rule);color:var(--ink-3);font-size:.83rem}
+footer .wrap{padding-block:20px 32px;display:flex;flex-direction:column;gap:6px}
+
+@media (max-width:640px){
+  .wrap{padding-inline:16px}
+  .decode{grid-template-columns:1fr}
+  .decode div{border-right:0;border-bottom:1px solid var(--rule)}
+  .decode div:last-child{border-bottom:0}
+  .erow{grid-template-columns:minmax(0,1fr) minmax(0,1fr) auto}
+  .erow select.acc-sel{grid-column:1/-1}
+  .erow.head{display:none}
+  .courses li{grid-template-columns:1fr}
+  .cal li{grid-template-columns:1fr auto}
+  .cal .dt{grid-column:1/-1;min-width:0}
+}
+@media (prefers-reduced-motion:no-preference){
+  .acct.flash{transition:outline-color .6s}
+}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <div class="brand">
+      <div class="mark" aria-hidden="true"><span class="d">B</span><span>=</span><span class="c">A</span></div>
+      <div>
+        <h1>Mizan</h1>
+        <p>TOGÜ · Muhasebe ve Vergi Uygulamaları · ilk dönem çalışma kiti</p>
+      </div>
+    </div>
+    <label class="campus" for="campus">Kampüs
+      <select id="campus">
+        <option value="tokat">Tokat merkez (Sosyal Bilimler MYO)</option>
+        <option value="niksar">Niksar MYO</option>
+      </select>
+    </label>
+  </div>
+</header>
+
+<nav class="tabs" aria-label="Bölümler">
+  <div class="wrap" id="tabs">
+    <button type="button" data-route="hafta">Bu hafta</button>
+    <button type="button" data-route="muhasebe">Genel Muhasebe I</button>
+    <button type="button" data-route="hesaplar">Hesap planı</button>
+    <button type="button" data-route="yevmiye">Yevmiye alıştırması</button>
+    <button type="button" data-route="araclar">Not ve KDV</button>
+    <button type="button" data-route="takvim">Takvim</button>
+    <button type="button" data-route="dersler">Diğer dersler</button>
+    <button type="button" data-route="kaynaklar">Kaynaklar</button>
+  </div>
+</nav>
+
+<main>
+  <div class="wrap">
+    <section class="page" id="page-hafta" aria-labelledby="h-hafta"></section>
+    <section class="page" id="page-muhasebe" hidden></section>
+    <section class="page" id="page-hesaplar" hidden></section>
+    <section class="page" id="page-yevmiye" hidden></section>
+    <section class="page" id="page-araclar" hidden></section>
+    <section class="page" id="page-takvim" hidden></section>
+    <section class="page" id="page-dersler" hidden></section>
+    <section class="page" id="page-kaynaklar" hidden></section>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>Mizan bir çalışma aracıdır, resmî kaynak değildir. Ders planı, takvim ve sınav kurallarında program kılavuzu, akademik takvim ve dersin hocasının duyurusu esastır.</p>
+    <p>İçerik TOGÜ'nün yayımladığı belgelerden derlendi; kaynak bağlantıları 24 Eylül 2026'da denetlendi. Ayrıntılar <a href="#kaynaklar" data-route="kaynaklar">Kaynaklar</a> bölümünde.</p>
+  </div>
+</footer>
+
+<script>
+(function () {
+  'use strict';
+
+  /* ---------- 1. YARDIMCILAR ---------- */
+  const $ = (s, r = document) => r.querySelector(s);
+  const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
+  const esc = (v) => String(v ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const Store = {
+    get(k, d) { try { const v = localStorage.getItem('mizan_' + k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
+    set(k, v) { try { localStorage.setItem('mizan_' + k, JSON.stringify(v)); } catch (e) { /* depolama kapalıysa sessizce devam */ } }
+  };
+  const DAY = 864e5;
+  const D = (s) => { const [y, m, d] = s.split('-').map(Number); return new Date(y, m - 1, d); };
+  const DEMO_DATE = (() => { try { const v = (localStorage.getItem('mizan_tarih') || '').replace(/"/g, ''); return /^\d{4}-\d{2}-\d{2}$/.test(v) ? v : null; } catch (e) { return null; } })();
+  const todayDate = () => { if (DEMO_DATE) return D(DEMO_DATE); const n = new Date(); return new Date(n.getFullYear(), n.getMonth(), n.getDate()); };
+  let TODAY = todayDate();
+  const addDays = (d, n) => new Date(d.getFullYear(), d.getMonth(), d.getDate() + n);
+  const days = (a, b) => Math.round((b - a) / DAY);
+  const fDate = (d, o) => d.toLocaleDateString('tr-TR', o || { day: 'numeric', month: 'long' });
+  const fRange = (a, b) => {
+    if (!b || +a === +b) return fDate(a, { day: 'numeric', month: 'short', year: 'numeric' });
+    if (a.getMonth() === b.getMonth()) return a.getDate() + '–' + fDate(b, { day: 'numeric', month: 'short', year: 'numeric' });
+    return fDate(a, { day: 'numeric', month: 'short' }) + ' – ' + fDate(b, { day: 'numeric', month: 'short', year: 'numeric' });
+  };
+  const money = (n, dec = 2) => Number(n).toLocaleString('tr-TR', { minimumFractionDigits: dec, maximumFractionDigits: 2 });
+  const parseAmount = (raw) => {
+    let s = String(raw || '').replace(/\s|TL|₺/gi, '');
+    if (!s) return NaN;
+    if (s.includes(',')) s = s.replace(/\./g, '').replace(',', '.');
+    else if (/^\d{1,3}(\.\d{3})+$/.test(s)) s = s.replace(/\./g, '');
+    return /^\d+(\.\d+)?$/.test(s) ? Number(s) : NaN;
+  };
+
+  /* ---------- 2. AKADEMİK TAKVİM (TOGÜ genel takvimi; her eğitim yılı bir kayıt) ---------- */
+  // Yeni yıl eklemek için README'deki "Takvimi güncellemek" adımlarına bak.
+  // weeks: ders haftalarının pazartesileri; ara sınav ve bayram haftaları atlanır. breaks: ders yapılmayan haftalar.
+  const TAKVIMLER = {
+    '2026-2027': {
+      start: '2026-09-01', end: '2027-08-31', src: 'takvim',
+      guz: {
+        weeks: ['2026-09-21', '2026-09-28', '2026-10-05', '2026-10-12', '2026-10-19', '2026-10-26', '2026-11-02', '2026-11-09',
+          '2026-11-23', '2026-11-30', '2026-12-07', '2026-12-14', '2026-12-21', '2026-12-28'],
+        midterm: ['2026-11-14', '2026-11-22'], finals: ['2027-01-03', '2027-01-12'], makeup: ['2027-01-16', '2027-01-23'], breaks: []
+      },
+      bahar: {
+        weeks: ['2027-02-01', '2027-02-08', '2027-02-15', '2027-02-22', '2027-03-01', '2027-03-15', '2027-03-22', '2027-03-29',
+          '2027-04-12', '2027-04-19', '2027-04-26', '2027-05-03', '2027-05-10', '2027-05-24'],
+        midterm: ['2027-04-03', '2027-04-11'], finals: ['2027-05-31', '2027-06-10'], makeup: ['2027-06-15', '2027-06-23'],
+        breaks: [['2027-03-08', '2027-03-14'], ['2027-05-17', '2027-05-23']]
+      },
+      events: [
+        { term: 'guz', id: 'kayit', a: '2026-09-14', b: '2026-09-19', t: 'Ders kaydı ve kayıt yenileme', s: 'OBS (obs.gop.edu.tr) üzerinden. Katkı payı ödemesi de aynı tarihlerde.', check: 'Derslerimi seçtim' },
+        { term: 'guz', id: 'danisman', a: '2026-09-14', b: '2026-09-20', t: 'Danışman onayı', s: 'Ders kaydın danışman onaylamadan kesinleşmez.', check: 'Onaylandı' },
+        { term: 'guz', id: 'basla', a: '2026-09-21', t: 'Derslerin başlaması', s: 'Birinci hafta uyum (oryantasyon) haftasıdır.' },
+        { term: 'guz', id: 'muafsinav', a: '2026-10-01', t: 'Enformatik ve yabancı dil muafiyet sınavları', s: 'ENF100 ve yabancı dil dersinden muaf olmak isteyenler için.', check: 'Karar verdim' },
+        { term: 'guz', id: 'muafbasvuru', a: '2026-10-02', t: 'Muafiyet ve kayıt dondurma başvurularının son günü', s: 'Daha önce aldığın derslerden muafiyet istiyorsan başvuru bu tarihe kadar.', check: 'Gerekmiyor ya da başvurdum' },
+        { term: 'guz', id: 'mazeret', a: '2026-10-09', t: 'Mazeretli ders kaydı başvurularının son günü', s: 'Kayıt döneminde ders ekleyip çıkaramadıysan.' },
+        { term: 'guz', id: 'telafi1', a: '2026-10-31', t: 'Telafi günü (Cumartesi)', s: '29 Ekim Perşembe günü yapılamayan dersler bugün yapılır.' },
+        { term: 'guz', id: 'telafi2', a: '2026-11-01', t: 'Telafi günü (Pazar)', s: '28 Ekim Çarşamba saat 13.00\'ten sonraki dersler bugün yapılır.' },
+        { term: 'guz', id: 'vize', a: '2026-11-14', b: '2026-11-22', t: 'Ara sınavlar', s: 'Ara sınav haftasında ders yapılmaz.', check: 'Hazırım' },
+        { term: 'guz', id: 'bitis', a: '2027-01-02', t: 'Derslerin bitimi ve telafi günü', s: '1 Ocak Cuma günü yapılamayan dersler 2 Ocak Cumartesi yapılır.' },
+        { term: 'guz', id: 'final', a: '2027-01-03', b: '2027-01-12', t: 'Yarıyıl sonu (final) sınavları', s: 'Dersi geçmek için final notu en az 50 olmalı.' },
+        { term: 'guz', id: 'but', a: '2027-01-16', b: '2027-01-23', t: 'Bütünleme sınavları', s: 'Bütünlemede de en az 50 kuralı geçerli.' },
+        { term: 'guz', id: 'tekders', a: '2027-01-29', t: 'Tek ders sınavı', s: 'Mezuniyet için tek dersi kalanlar içindir.' },
+        { term: 'bahar', id: 'b-kayit', a: '2027-01-25', b: '2027-01-30', t: 'Bahar ders kaydı ve kayıt yenileme', s: 'OBS üzerinden. Katkı payı 2. taksiti de aynı tarihlerde.', check: 'Derslerimi seçtim' },
+        { term: 'bahar', id: 'b-danisman', a: '2027-01-25', b: '2027-01-31', t: 'Bahar danışman onayı', s: 'Ders kaydın danışman onaylamadan kesinleşmez.', check: 'Onaylandı' },
+        { term: 'bahar', id: 'b-basla', a: '2027-02-01', t: 'Bahar derslerinin başlaması', s: 'Genel Muhasebe I, baharda Genel Muhasebe II ile devam eder.' },
+        { term: 'bahar', id: 'b-muaf', a: '2027-02-12', t: 'Muafiyet ve kayıt dondurma başvurularının son günü', s: 'Bahar yarıyılı için.' },
+        { term: 'bahar', id: 'b-mazeret', a: '2027-02-19', t: 'Mazeretli ders kaydı başvurularının son günü', s: 'Bahar yarıyılı için.' },
+        { term: 'bahar', id: 'b-bayram1', a: '2027-03-08', b: '2027-03-14', t: 'Bayram haftası', s: 'Akademik takvim dışında; ders yapılmaz.' },
+        { term: 'bahar', id: 'b-vize', a: '2027-04-03', b: '2027-04-11', t: 'Ara sınavlar', s: 'Ara sınav haftasında ders yapılmaz.', check: 'Hazırım' },
+        { term: 'bahar', id: 'b-telafi', a: '2027-04-24', t: 'Telafi günü (Cumartesi)', s: '23 Nisan Cuma günü yapılamayan dersler bugün yapılır.' },
+        { term: 'bahar', id: 'b-bayram2', a: '2027-05-17', b: '2027-05-23', t: 'Bayram haftası', s: 'Akademik takvim dışında; ders yapılmaz.' },
+        { term: 'bahar', id: 'b-bitis', a: '2027-05-28', t: 'Derslerin bitimi', s: 'Bahar yarıyılının son ders günü.' },
+        { term: 'bahar', id: 'b-final', a: '2027-05-31', b: '2027-06-10', t: 'Yarıyıl sonu (final) sınavları', s: 'Dersi geçmek için final notu en az 50 olmalı.' },
+        { term: 'bahar', id: 'b-but', a: '2027-06-15', b: '2027-06-23', t: 'Bütünleme sınavları', s: 'Bütünlemede de en az 50 kuralı geçerli.' },
+        { term: 'bahar', id: 'b-tekders', a: '2027-06-30', t: 'Tek ders sınavı', s: 'Mezuniyet için tek dersi kalanlar içindir.' },
+        { term: 'yaz', id: 'yaz', a: '2027-07-12', b: '2027-08-21', t: 'Yaz okulu ders dönemi', s: 'Derslere ön kayıt 5–9 Temmuz, yaz okulu sınavları 23–25 Ağustos 2027.' }
+      ]
+    }
+  };
+  const TERM_LABEL = { guz: 'Güz yarıyılı', bahar: 'Bahar yarıyılı', yaz: 'Yaz okulu' };
+  const YEAR_KEYS = Object.keys(TAKVIMLER).sort();
+  let YEAR_KEY, YEAR, STALE, TERMS, CAL, WEEK_STARTS, MIDTERM, FINALS, MAKEUP;
+  function loadYear() {
+    const within = YEAR_KEYS.find((k) => TODAY >= D(TAKVIMLER[k].start) && TODAY <= D(TAKVIMLER[k].end));
+    const before = YEAR_KEYS.find((k) => TODAY < D(TAKVIMLER[k].start));
+    YEAR_KEY = within || before || YEAR_KEYS[YEAR_KEYS.length - 1];
+    YEAR = TAKVIMLER[YEAR_KEY];
+    STALE = !within && !before;
+    const term = (t) => ({ weeks: t.weeks.map(D), midterm: t.midterm.map(D), finals: t.finals.map(D), makeup: t.makeup.map(D), breaks: (t.breaks || []).map((b) => b.map(D)) });
+    TERMS = { guz: term(YEAR.guz), bahar: term(YEAR.bahar) };
+    WEEK_STARTS = TERMS.guz.weeks; MIDTERM = TERMS.guz.midterm; FINALS = TERMS.guz.finals; MAKEUP = TERMS.guz.makeup;
+    CAL = YEAR.events.map((e) => ({ ...e, A: D(e.a), B: D(e.b || e.a) })).sort((x, y) => x.A - y.A || x.B - y.B);
+  }
+  loadYear();
+  const weekRange = (i) => fRange(WEEK_STARTS[i], addDays(WEEK_STARTS[i], 4));
+
+  function phase() {
+    if (STALE) return { kind: 'stale' };
+    const inR = (r) => TODAY >= r[0] && TODAY <= r[1];
+    for (const term of ['guz', 'bahar']) {
+      const T = TERMS[term];
+      if (inR(T.midterm)) return { kind: 'midterm', term };
+      if (inR(T.finals)) return { kind: 'finals', term };
+      if (inR(T.makeup)) return { kind: 'makeup', term };
+      if (T.breaks.some(inR)) return { kind: 'break', term };
+      for (let i = 0; i < T.weeks.length; i++) {
+        if (TODAY >= T.weeks[i] && TODAY < addDays(T.weeks[i], 7)) return { kind: 'week', term, n: i + 1 };
+      }
+    }
+    if (TODAY < TERMS.guz.weeks[0]) return { kind: 'pre' };
+    if (TODAY < TERMS.guz.makeup[0]) return { kind: 'gap', term: 'guz' };
+    if (TODAY < TERMS.bahar.weeks[0]) return { kind: 'semester' };
+    if (TODAY < TERMS.bahar.makeup[0]) return { kind: 'gap', term: 'bahar' };
+    return { kind: 'summer' };
+  }
+  const isGuzWeek = (ph) => ph.kind === 'week' && ph.term === 'guz';
+
+  /* ---------- 3. KAMPÜS KATMANI (değişebilen bilgiler burada) ---------- */
+  const CAMPUS = {
+    tokat: {
+      label: 'Tokat merkez', unit: 'Tokat Sosyal Bilimler MYO', code: 'MV1013', hours: '4 teorik + 1 uygulama saat',
+      grading: [['Ara sınav', 20], ['Ödev', 20], ['Final', 60]], gradingText: 'Klasik ara sınav %20, ödev %20, final %60',
+      book: 'Durmuş Acar, Nilüfer Tetik — Genel Muhasebe, Detay Yayıncılık, 2018',
+      src: 'tokat-kilavuz',
+      aim: 'Muhasebenin tanımını ve genel kabul görmüş ilkelerini kavramak, tek düzen hesap planını kullanmak ve dönem içi kayıtları yapabilmek.',
+      weeks: [
+        { t: 'Oryantasyon haftası', o: [] },
+        { t: 'Temel kavramlar, muhasebe ilkeleri, muhasebe mesleği, defterler ve bilanço', o: ['Muhasebenin tanımını ve temel kavramlarını bilir.', 'Genel kabul görmüş muhasebe ilkelerini açıklar.', 'Muhasebe bilgisini kimlerin kullandığını açıklar.', 'Meslek mensubu olmak için gereken yeterlilikleri öğrenir.', 'Muhasebe belgelerini tanır ve düzenler.', 'Bilanço esasına göre tutulan defterleri ve işletme defterini bilir.'] },
+        { t: 'Bilanço, gelir tablosu, hesaplar ve işleyişi', o: ['Bilançoyu ve bilanço hesaplarını tanımlar.', 'Gelir tablosunu tanımlar ve düzenler.', 'Hesap kavramını ve hesapların işleyişini açıklar.', 'Tek düzen hesap planının yapısını kavrar: hesap sınıfı, hesap grubu, hesap kodu.'] },
+        { t: 'Dönen varlıklar: hazır değerler', o: ['Hazır değerler grubundaki hesapları ve işleyişlerini açıklar.', 'Bu hesaplarla ilgili muhasebe kayıtlarını yapar.'] },
+        { t: 'Menkul kıymetler ve ticari alacaklar', o: ['Menkul kıymetler grubundaki hesapları ve kayıtlarını bilir.', 'Ticari alacak hesaplarının işleyişini açıklar.'] },
+        { t: 'Ticari alacaklar ve diğer alacaklar', o: ['Ticari ve diğer alacaklar grubundaki hesaplarla kayıt yapar.'] },
+        { t: 'Stoklar', o: ['Stok hesaplarını tanır.', 'Sürekli ve aralıklı envanter yöntemlerini bilir.', 'Ticari mal alış ve satışında KDV kaydını yapar.'] },
+        { t: 'Gelecek aylara ait giderler, gelir tahakkukları ve diğer dönen varlıklar', o: ['Peşin ödenen giderleri ve tahakkuk eden gelirleri kaydeder.', 'KDV hesaplarıyla ilgili mahsup kayıtlarını yapar.'] },
+        { t: 'Duran varlıklar: ticari alacaklar, diğer alacaklar, mali duran varlıklar', o: ['Uzun vadeli alacak hesaplarının işleyişini açıklar.', 'Mali duran varlıklarla ilgili kayıtları yapar.'] },
+        { t: 'Maddi ve maddi olmayan duran varlıklar', o: ['Maddi ve maddi olmayan duran varlıklarla ilgili kayıtları yapar.'] },
+        { t: 'Kısa vadeli yabancı kaynaklar: mali borçlar ve ticari borçlar', o: ['Kısa ve uzun vadeli borç ayrımını bilir.', 'Banka ve finans kuruluşlarına olan borçları kaydeder.'] },
+        { t: 'Ticari borçlar ve diğer borçlar', o: ['Ticari borç ile diğer borç ayrımını bilir ve kayıtlarını yapar.'] },
+        { t: 'Alınan avanslar, ödenecek vergi ve diğer yükümlülükler, gelecek aylara ait gelirler ve gider tahakkukları', o: ['Avans alma işlemlerini kaydeder.', 'SGK kesintilerini hesaplar ve kaydeder.', 'Tahakkuk eden giderleri ve peşin tahsil edilen gelirleri kaydeder.'] },
+        { t: 'Diğer kısa vadeli ve uzun vadeli yabancı kaynaklar, öz kaynaklar', o: ['Uzun vadeli yabancı kaynak hesaplarını kaydeder.', 'Sermaye, ödenmiş ve ödenmemiş sermaye kavramlarını bilir ve kaydeder.'] }
+      ],
+      topicWeek: { gelirgider: [3], hazir: [4], menkul: [5], alacak: [5, 6], stok: [7], gag: [8], duran1: [9], duran2: [10], mali: [11], ticari: [11, 12], diger: [13], uvmali: [14], uvticari: [14], oz: [14] },
+      courses: { gi: 'MV1015', tm: 'MV1021', me: 'MV1019', th: 'MV1011', enf: 'ENF100', dil: 'SEC101' }
+    },
+    niksar: {
+      label: 'Niksar', unit: 'Niksar MYO', code: 'MV101', hours: '4 teorik + 1 uygulama saat',
+      grading: [['Ara sınav', 40], ['Final', 60]], gradingText: 'Klasik ara sınav %40, klasik final %60',
+      book: 'Turan Öndeş (ed.) — Genel Muhasebe, Atatürk Üniversitesi Yayınları, 2011 (1–13. bölümler)',
+      src: 'niksar-kilavuz',
+      aim: 'Temel muhasebe bilgilerini ve dönem içi işlemlerin kaydını öğretmek.',
+      weeks: [
+        { t: 'Uyum haftası', o: [] },
+        { t: 'İşletme ve muhasebe', o: ['İşletmenin varlıklarını, kaynaklarını ve muhasebeyi tanımlar.', 'Muhasebenin türlerini açıklar.'] },
+        { t: 'Muhasebe denkliği ve hesap kavramı', o: ['Bilanço eşitliğini açıklar.', 'Hesapların işleyişini ve sınıflandırmasını bilir.'] },
+        { t: 'Muhasebe belgeleri ve muhasebe süreci', o: ['Muhasebe belgelerini ve düzenlenmesini bilir.', 'Envanteri bilir ve bilanço düzenler.'] },
+        { t: 'Hazır değerler ve menkul kıymetler', o: ['Bu gruplardaki hesapların kayıtlarını yapar.'] },
+        { t: 'Alacaklar', o: ['Alacakları sınıflandırır.', 'Şüpheli alacak kayıtlarını bilir.'] },
+        { t: 'Stoklar ve KDV', o: ['Mal alış ve satışlarını kaydeder.', 'Aralıklı ve sürekli envanter yöntemlerini bilir.', 'KDV kayıtlarını yapar.'] },
+        { t: 'Duran varlıklar I', o: ['Uzun vadeli ticari ve diğer alacaklar ile mali duran varlıkların işleyişini bilir.'] },
+        { t: 'Duran varlıklar II', o: ['Maddi ve maddi olmayan duran varlıkların işleyişini bilir.', 'Amortisman işlemlerini yapar.'] },
+        { t: 'Mali borçlar', o: ['Banka kredilerini ve uzun vadeli kredilerin taksit ve faiz kayıtlarını yapar.'] },
+        { t: 'Ticari ve diğer borçlar', o: ['Uzun vadeli senetli ve senetsiz borçları kaydeder.', 'Kısa vadeye dönen uzun vadeli borçların kaydını yapar.'] },
+        { t: 'Öz kaynaklar', o: ['Öz kaynak hesaplarını tanımlar.', 'Dönem kâr veya zararını kaydeder.'] },
+        { t: 'Gelirler ve giderler', o: ['Gelir ve gider hesaplarını tanımlar.', 'Gelir ve gider tahakkuklarını açıklar.'] },
+        { t: 'Genel tekrar', o: [] }
+      ],
+      topicWeek: { temel: [3], hazir: [5], menkul: [5], alacak: [6], stok: [7], duran1: [8], duran2: [9], mali: [10], uvmali: [10], ticari: [11], uvticari: [11], diger: [11], oz: [12], gelirgider: [13], gag: [13] },
+      courses: { gi: 'MV103', tm: 'MV109', me: 'MV105', th: 'MV107', enf: 'ENF100', dil: 'İNG101' }
+    }
+  };
+
+  /* ---------- 4. TEK DÜZEN HESAP PLANI (ilk dönemde geçen hesaplar) ---------- */
+  const CLASSES = { 1: 'Dönen Varlıklar', 2: 'Duran Varlıklar', 3: 'Kısa Vadeli Yabancı Kaynaklar', 4: 'Uzun Vadeli Yabancı Kaynaklar', 5: 'Öz Kaynaklar', 6: 'Gelir Tablosu Hesapları', 7: 'Maliyet Hesapları' };
+  const GROUPS = { 10: 'Hazır Değerler', 11: 'Menkul Kıymetler', 12: 'Ticari Alacaklar', 15: 'Stoklar', 18: 'Gelecek Aylara Ait Giderler ve Gelir Tahakkukları', 19: 'Diğer Dönen Varlıklar', 25: 'Maddi Duran Varlıklar', 26: 'Maddi Olmayan Duran Varlıklar', 30: 'Mali Borçlar', 32: 'Ticari Borçlar', 33: 'Diğer Borçlar', 34: 'Alınan Avanslar', 36: 'Ödenecek Vergi ve Diğer Yükümlülükler', 38: 'Gelecek Aylara Ait Gelirler ve Gider Tahakkukları', 39: 'Diğer Kısa Vadeli Yabancı Kaynaklar', 40: 'Mali Borçlar', 42: 'Ticari Borçlar', 50: 'Ödenmiş Sermaye', 54: 'Kâr Yedekleri', 57: 'Geçmiş Yıllar Kârları', 58: 'Geçmiş Yıllar Zararları (-)', 59: 'Dönem Net Kârı (Zararı)', 60: 'Brüt Satışlar', 61: 'Satış İndirimleri (-)', 62: 'Satışların Maliyeti (-)', 64: 'Diğer Faaliyetlerden Olağan Gelir ve Kârlar', 66: 'Finansman Giderleri (-)', 77: 'Genel Yönetim Giderleri', 78: 'Finansman Giderleri' };
+  const ACCOUNTS = [
+    ['100', 'Kasa', 'B', 'İşletmedeki nakit para. Para girince borç, çıkınca alacak yazılır. Alacak bakiyesi vermez: kasada eksi para olmaz.'],
+    ['101', 'Alınan Çekler', 'B', 'Müşterilerden alınan, henüz tahsil ya da ciro edilmemiş çekler. Çek alınınca borç; tahsil, ciro veya iade edilince alacak.'],
+    ['102', 'Bankalar', 'B', 'Bankadaki mevduat. Hesaba para girince borç, para çekilince ya da ödeme yapılınca alacak.'],
+    ['103', 'Verilen Çekler ve Ödeme Emirleri (-)', 'A', 'İşletmenin kendi hesabından yazdığı çekler, banka ödeyene kadar burada izlenir. Çek verilince alacak, ödenince borç. Hazır değerleri düzenleyen bir hesaptır.'],
+    ['110', 'Hisse Senetleri', 'B', 'Kısa sürede satmak için alınan hisse senetleri. Alışta borç, satışta alacak.'],
+    ['120', 'Alıcılar', 'B', 'Senetsiz (açık hesap) satışlardan doğan ticari alacaklar. Veresiye satışta borç, tahsilatta alacak.'],
+    ['121', 'Alacak Senetleri', 'B', 'Senede bağlanmış ticari alacaklar. Senet alınınca borç, tahsil veya ciro edilince alacak.'],
+    ['128', 'Şüpheli Ticari Alacaklar', 'B', 'Tahsili şüpheli hâle gelen, dava veya icra aşamasındaki ticari alacaklar. Buraya aktarılırken borç yazılır.'],
+    ['129', 'Şüpheli Ticari Alacaklar Karşılığı (-)', 'A', 'Şüpheli alacaklar için ayrılan karşılık. Karşılık ayrılınca alacak yazılır; 128 hesabını düzenler.'],
+    ['153', 'Ticari Mallar', 'B', 'Satmak amacıyla alınan mallar. Alışta maliyet bedeliyle borç yazılır. Sürekli envanterde satılan malın maliyeti bu hesaptan alacak olarak çıkar.'],
+    ['159', 'Verilen Sipariş Avansları', 'B', 'Alınacak mal için satıcıya peşin ödenen avans. Avans verilince borç, mal gelince alacak.'],
+    ['180', 'Gelecek Aylara Ait Giderler', 'B', 'Peşin ödenen ama gelecek aylara ait giderler, örneğin peşin ödenen kira. Ödemede borç; ilgili ay gelip gidere aktarılınca alacak.'],
+    ['181', 'Gelir Tahakkukları', 'B', 'Bu döneme ait olup henüz tahsil edilmemiş gelirler. Tahakkukta borç, tahsilatta alacak.'],
+    ['191', 'İndirilecek KDV', 'B', 'Alışlarda ve giderlerde ödenen KDV. Borç yazılır; dönem sonunda 391 Hesaplanan KDV ile mahsup edilir.'],
+    ['196', 'Personel Avansları', 'B', 'Çalışanlara verilen ücret avansları. Verilince borç, ücretten düşülünce alacak.'],
+    ['252', 'Binalar', 'B', 'İşletmenin kullandığı binalar. Edinmede maliyet bedeliyle borç.'],
+    ['254', 'Taşıtlar', 'B', 'İşletmenin kullandığı otomobil, kamyon gibi taşıtlar. Edinmede maliyet bedeliyle borç.'],
+    ['255', 'Demirbaşlar', 'B', 'Büro mobilyası, bilgisayar gibi uzun süre kullanılan araç ve gereçler. Edinmede maliyet bedeliyle borç.'],
+    ['257', 'Birikmiş Amortismanlar (-)', 'A', 'Maddi duran varlıklar için ayrılan amortismanların toplamı. Amortisman ayrılınca alacak; varlığın değerini düzenler.'],
+    ['260', 'Haklar', 'B', 'Marka, patent, lisans gibi maddi olmayan haklar. Edinmede borç.'],
+    ['300', 'Banka Kredileri', 'A', 'Bir yıl içinde ödenecek banka kredileri. Kredi kullanılınca alacak, geri ödenince borç.'],
+    ['303', 'Uzun Vadeli Kredilerin Anapara Taksitleri ve Faizleri', 'A', 'Uzun vadeli kredilerin vadesi bir yılın altına inen taksitleri. 400 hesabından buraya aktarılırken alacak, ödenince borç.'],
+    ['320', 'Satıcılar', 'A', 'Senetsiz (açık hesap) alışlardan doğan ticari borçlar. Veresiye alışta alacak, ödemede borç.'],
+    ['321', 'Borç Senetleri', 'A', 'Senede bağlanmış kısa vadeli ticari borçlar. Senet verilince alacak, ödenince borç.'],
+    ['335', 'Personele Borçlar', 'A', 'Hak edilmiş ama henüz ödenmemiş ücretler. Tahakkukta alacak, ödemede borç.'],
+    ['340', 'Alınan Sipariş Avansları', 'A', 'Teslim edilecek mal için müşteriden peşin alınan avans. Avans alınınca alacak, mal teslim edilince borç.'],
+    ['360', 'Ödenecek Vergi ve Fonlar', 'A', 'İşletmenin ödeyeceği ya da ücretlerden keserek vergi dairesine yatıracağı vergiler: gelir vergisi stopajı, damga vergisi gibi. Tahakkukta alacak, ödemede borç.'],
+    ['361', 'Ödenecek Sosyal Güvenlik Kesintileri', 'A', 'SGK\'ya ödenecek işçi ve işveren primleri. Tahakkukta alacak, ödemede borç.'],
+    ['380', 'Gelecek Aylara Ait Gelirler', 'A', 'Peşin tahsil edilen ama gelecek aylara ait gelirler, örneğin peşin alınan kira. Tahsilatta alacak, ilgili ay gelince borç.'],
+    ['381', 'Gider Tahakkukları', 'A', 'Bu döneme ait olup henüz ödenmemiş giderler. Tahakkukta alacak, ödemede borç.'],
+    ['391', 'Hesaplanan KDV', 'A', 'Satışlarda müşteriye hesaplanan KDV. Alacak yazılır; dönem sonunda 191 İndirilecek KDV ile mahsup edilir.'],
+    ['400', 'Banka Kredileri', 'A', 'Vadesi bir yıldan uzun banka kredileri. Kullanılınca alacak.'],
+    ['420', 'Satıcılar', 'A', 'Vadesi bir yıldan uzun senetsiz ticari borçlar.'],
+    ['421', 'Borç Senetleri', 'A', 'Vadesi bir yıldan uzun senetli ticari borçlar.'],
+    ['500', 'Sermaye', 'A', 'Ortakların işletmeye koymayı taahhüt ettiği sermaye. Kuruluşta alacak yazılır.'],
+    ['501', 'Ödenmemiş Sermaye (-)', 'B', 'Taahhüt edilip henüz ödenmemiş sermaye. Taahhütte borç, ortak ödedikçe alacak.'],
+    ['540', 'Yasal Yedekler', 'A', 'Kanun gereği kârdan ayrılan yedekler. Ayrılınca alacak.'],
+    ['570', 'Geçmiş Yıllar Kârları', 'A', 'Önceki yıllardan dağıtılmadan kalan kârlar.'],
+    ['580', 'Geçmiş Yıllar Zararları (-)', 'B', 'Önceki yıllardan kapatılmamış zararlar.'],
+    ['590', 'Dönem Net Kârı', 'A', 'Vergi sonrası dönem kârı. Dönem sonunda alacak yazılır.'],
+    ['591', 'Dönem Net Zararı (-)', 'B', 'Dönem sonunda oluşan zarar. Borç yazılır.'],
+    ['600', 'Yurt İçi Satışlar', 'A', 'Yurt içinde yapılan satışlar, KDV hariç tutarla. Satışta alacak.'],
+    ['610', 'Satıştan İadeler (-)', 'B', 'Müşterinin geri getirdiği malların satış tutarı. İadede borç.'],
+    ['611', 'Satış İskontoları (-)', 'B', 'Satıştan sonra müşteriye yapılan indirimler. Borç yazılır.'],
+    ['621', 'Satılan Ticari Mallar Maliyeti (-)', 'B', 'Satılan malların alış maliyeti. Borç yazılır, karşılığında 153 Ticari Mallar alacaklanır.'],
+    ['642', 'Faiz Gelirleri', 'A', 'Mevduat ve vadeli satışlardan elde edilen faizler. Alacak yazılır.'],
+    ['660', 'Kısa Vadeli Borçlanma Giderleri (-)', 'B', 'Kısa vadeli borçların faiz ve benzeri giderlerinin gelir tablosundaki yeri. 7/A seçeneğinde dönem sonunda 780 hesabından buraya aktarılır.'],
+    ['770', 'Genel Yönetim Giderleri', 'B', 'İşletmenin yönetimi için yapılan giderler: kira, kırtasiye, temizlik, büro personeli ücreti gibi. Borç yazılır.'],
+    ['780', 'Finansman Giderleri', 'B', 'Kredi faizi gibi borçlanma giderleri. Borç yazılır (7/A seçeneği).']
+  ].map(([code, name, up, text]) => ({ code, name, up, text, cls: code[0], grp: code.slice(0, 2), minus: /\(-\)/.test(name) }));
+  const ACC = Object.fromEntries(ACCOUNTS.map((a) => [a.code, a]));
+  const accLabel = (c) => c + ' ' + (ACC[c] ? ACC[c].name : '');
+
+  function topicOf(code) {
+    const c = +code, g = Math.floor(c / 10);
+    if (c === 191 || c === 391) return 'stok';
+    if (g === 10) return 'hazir';
+    if (g === 11) return 'menkul';
+    if (g === 12 || g === 13) return 'alacak';
+    if (g === 15) return 'stok';
+    if (g === 18 || g === 19) return 'gag';
+    if (g === 22 || g === 24) return 'duran1';
+    if (g === 25 || g === 26) return 'duran2';
+    if (g === 30) return 'mali';
+    if (g === 32) return 'ticari';
+    if (g >= 33 && g <= 39) return 'diger';
+    if (g === 40) return 'uvmali';
+    if (g === 42) return 'uvticari';
+    if (g >= 50 && g < 60) return 'oz';
+    return 'gelirgider';
+  }
+  const weeksOf = (code) => (camp().topicWeek[topicOf(code)] || []);
+  const accountsOfWeek = (n) => ACCOUNTS.filter((a) => weeksOf(a.code).includes(n));
+
+  /* ---------- 5. YEVMİYE ALIŞTIRMASI (kılavuzdaki örnekten, güncel KDV ile) ---------- */
+  const EXERCISES = [
+    { date: '01.12', title: 'Açılış kaydı', q: 'ABC Ticaret şu varlık ve borçlarla kuruluyor: Kasa 60.000 TL, Bankalar 100.000 TL, Alacak senetleri 20.000 TL, Demirbaşlar 60.000 TL. Banka kredileri 80.000 TL, uzun vadeli borç senetleri 70.000 TL. Aradaki fark ortakların koyduğu sermayedir. Açılış kaydını yap.',
+      sol: [['100', 'B', 60000], ['102', 'B', 100000], ['121', 'B', 20000], ['255', 'B', 60000], ['300', 'A', 80000], ['421', 'A', 70000], ['500', 'A', 90000]], exp: 'Açılış kaydı',
+      note: 'Sermaye = Varlıklar − Borçlar = 240.000 − 150.000 = 90.000 TL. Kılavuzdaki soruda sermaye verilmiyor; bu satırı senin bulman gerekiyor.' },
+    { date: '05.12', title: 'Peşin mal alışı', q: '15.000 TL tutarındaki ticari malı peşin alıyor. KDV %20, tutara dahil değil.', kdv: { base: 15000, acc: '191' },
+      sol: [['153', 'B', 15000], ['191', 'B', 3000], ['100', 'A', 18000]], exp: 'Peşin mal alışı',
+      note: 'KDV = 15.000 × %20 = 3.000 TL. Kasadan çıkan para malın bedeli ile KDV\'nin toplamıdır: 18.000 TL.' },
+    { date: '09.12', title: 'Bankadan para çekme', q: 'Banka hesabından kasaya 30.000 TL çekiyor.',
+      sol: [['100', 'B', 30000], ['102', 'A', 30000]], exp: 'Bankadan kasaya para çekildi',
+      note: 'İki varlık arasında yer değiştirme: kasa artar (borç), banka azalır (alacak). Toplam varlık değişmez.' },
+    { date: '11.12', title: 'Temizlik malzemesi alışı', q: 'İşletmede kullanmak için 500 TL tutarında temizlik malzemesini peşin alıyor. KDV %20, tutara dahil değil.', kdv: { base: 500, acc: '191' },
+      sol: [['770', 'B', 500], ['191', 'B', 100], ['100', 'A', 600]], exp: 'Temizlik malzemesi alındı',
+      note: 'Satmak için değil kullanmak için alınan malzeme gider olur (770). Kılavuzdaki özgün soruda kırtasiye ve %8 KDV vardı; %8 oranı 10 Temmuz 2023\'te %10 oldu. Burada genel orana tabi temizlik malzemesi kullanıldı.' },
+    { date: '15.12', title: 'Çek karşılığı satış', q: '20.000 TL tutarındaki malı satıyor. KDV %20, tutara dahil değil. KDV\'yi peşin alıyor, kalan 20.000 TL için çek alıyor.', kdv: { base: 20000, acc: '391' },
+      sol: [['100', 'B', 4000], ['101', 'B', 20000], ['600', 'A', 20000], ['391', 'A', 4000]], exp: 'KDV peşin, bedeli çekle mal satışı',
+      note: 'Satış KDV hariç tutarla 600\'e yazılır; KDV ayrı olarak 391\'e alacak yazılır.' },
+    { date: '18.12', title: 'Kredi taksiti ve faiz', q: 'Banka kredisinin 4.000 TL tutarındaki taksidini ve 600 TL faizini peşin ödüyor.',
+      sol: [['300', 'B', 4000], ['780', 'B', 600], ['100', 'A', 4600]], exp: 'Kredi taksiti ve faizi ödendi',
+      note: 'Taksit borcu azaltır (300 borç); faiz bir giderdir (780). Kılavuzun cevap anahtarında bu hesap "780 Faiz Giderleri" diye geçiyor; hesap planındaki adı 780 Finansman Giderleri.' },
+    { date: '20.12', title: 'Senet tahsili', q: 'Elindeki alacak senetlerinin yarısını peşin tahsil ediyor.',
+      sol: [['100', 'B', 10000], ['121', 'A', 10000]], exp: 'Alacak senedi tahsil edildi',
+      note: 'Açılışta 20.000 TL alacak senedi vardı; yarısı 10.000 TL.' },
+    { date: '22.12', title: 'Karma ödemeli mal alışı', q: '10.000 TL tutarındaki malı alıyor. KDV %20, tutara dahil değil. KDV\'sini ve mal bedelinin yarısını peşin, kalanını banka hesabından ödüyor.', kdv: { base: 10000, acc: '191' },
+      sol: [['153', 'B', 10000], ['191', 'B', 2000], ['100', 'A', 7000], ['102', 'A', 5000]], exp: 'Mal alındı; KDV ve yarısı peşin, kalanı bankadan',
+      note: 'Kasadan çıkan: 2.000 KDV + 5.000 mal bedelinin yarısı = 7.000 TL. Bankadan çıkan: 5.000 TL.' },
+    { date: '28.12', title: 'Çekle satış', q: '5.000 TL tutarındaki malı çek alarak satıyor. KDV %20, tutara dahil değil; çek KDV dahil tutar için alınıyor.', kdv: { base: 5000, acc: '391' },
+      sol: [['101', 'B', 6000], ['600', 'A', 5000], ['391', 'A', 1000]], exp: 'Çek karşılığı mal satışı',
+      note: 'Müşteriden alınan çek, satış bedeli ile KDV\'nin toplamıdır: 6.000 TL.' }
+  ];
+
+  /* ---------- 6. DİĞER DERSLER (Tokat kılavuzu 2025-2026) ---------- */
+  const OTHER = [
+    { key: 'gi', name: 'Genel İşletme', hours: '3 teorik saat', grading: 'Çoktan seçmeli ara sınav %40, final %60',
+      book: 'İsmet Mucuk — Temel İşletme Bilgileri, Türkmen Kitabevi, 2012',
+      weeks: ['Uyum haftası', 'İşletme ve işletme yönetimi', 'Ekonomik bir birim olarak işletme', 'İşletmenin çeşitleri', 'İşletmenin çeşitleri (devam)', 'Hukuki açıdan işletmeler', 'İşletmenin kuruluş çalışmaları', 'İşletmenin büyüklüğü', 'İşletmenin kuruluş yeri seçimi', 'Yönetim', 'Yönetim fonksiyonları', 'Üretim', 'Pazarlama', 'İnsan kaynakları'] },
+    { key: 'tm', name: 'Ticari Matematik', hours: '1 teorik + 1 uygulama saat', grading: 'Çoktan seçmeli ara sınav %40, final %60',
+      book: 'Rüştü Yayar — Ticari Matematik, Seçkin Yayıncılık, 2016',
+      weeks: ['Oryantasyon haftası', 'Yüzde ve binde hesapları', 'Alış, maliyet, satış ve kâr hesapları', 'Alış, maliyet, satış ve kâr hesapları (devam)', 'Oran ve orantı', 'Karışım, bileşim ve alaşım hesapları', 'Karışım, bileşim ve alaşım hesapları (devam)', 'Genel tekrar', 'Basit faiz hesapları', 'Basit iskonto hesapları', 'Bileşik faiz hesapları', 'Bileşik iskonto hesabı', 'Anüiteler (taksitler)', 'Genel tekrar'] },
+    { key: 'me', name: 'Mikro Ekonomi', hours: '2 teorik saat', grading: 'Çoktan seçmeli ara sınav %40, final %60',
+      book: 'Metin Berber, Erşan Bocutoğlu — Genel Ekonomi, 2013 (1–5. bölümler)',
+      weeks: ['Oryantasyon haftası', 'Ekonomi kavramı, kapsamı ve ekonomi bilmenin faydaları', 'Kıtlık, üretim olanakları eğrisi ve ekonominin temel sorunları', 'Ekonomik sistemler', 'Talep', 'Arz', 'Piyasa dengesi', 'Esneklikler', 'Tüketici dengesi', 'Üretici dengesi ve maliyet analizi', 'Üretici rantı, tüketici rantı ve örümcek ağı teorisi', 'Piyasa çeşitleri', 'Piyasa çeşitleri (devam)', 'Genel tekrar'] },
+    { key: 'th', name: 'Temel Hukuk', hours: '2 teorik saat', grading: 'Çoktan seçmeli ara sınav %40, final %60',
+      book: 'Faruk Andaç — Hukukun Temel Kavramları, Detay Yayıncılık, 2013',
+      weeks: ['Oryantasyon haftası', 'Hukukun tanımı ve temel kavramları', 'Hukukla ilgili çeşitli kavramlar', 'Hukuk sistemleri ve Türk hukuk sistemi', 'Hukukun kaynakları', 'Hukukun bölümleri', 'Kamu hukuku', 'Kamu hukuku (devam)', 'Kamu hukuku (devam)', 'Özel hukuk', 'Özel hukuk (devam)', 'Özel hukuk (devam)', 'Kişi, kişi türleri ve gerçek kişilerin ehliyeti', 'Kişiliğin korunması ve tüzel kişilik'] },
+    { key: 'enf', name: 'Bilgisayar Teknolojileri ve Ofis Yazılımları', hours: '2 teorik saat', grading: 'Kılavuza bak', book: null, weeks: null,
+      extra: '2. haftanın konusu bilgisayarın donanım yapısı ve birimleri. Bu dersten muaf olmak istersen muafiyet sınavı 1 Ekim 2026\'da.' },
+    { key: 'dil', name: 'Yabancı Dil I', hours: '2 teorik saat', grading: 'Kılavuza bak', book: null, weeks: null,
+      extra: 'Muafiyet sınavı 1 Ekim 2026\'da. Tokat\'ta "Zorunlu Seçmeli Yabancı Dil I", Niksar\'da "İngilizce I" adıyla geçer.' }
+  ];
+
+  /* ---------- 7. KAYNAKLAR ---------- */
+  const SOURCES = [
+    { id: 'tokat-kilavuz', title: 'Muhasebe ve Vergi Uygulamaları Programı Kılavuzu 2025-2026', org: 'TOGÜ Tokat Sosyal Bilimler MYO', kind: 'birincil',
+      url: 'https://tmyo.gop.edu.tr/depo/menuler/birim_12076/bilgilenirme_kilavuzu_451/html_icerik/files/2025-2026%20G%C3%9CZ%20MUHASEBE%20VE%20VERG%C4%B0%20UYGULAMALARI%20PROGRAM%20KILAVUZU%20III.pdf',
+      use: 'Ders planı, haftalık konular, kazanımlar, değerlendirme oranları, kaynak kitaplar, program yeterlilikleri, 120 AKTS mezuniyet koşulu.',
+      avoid: 'KDV oranları (çözümlü örnekte eski %18 ve %8 kullanılmış) ve 2026-2027 tarihleri. 2026-2027 kılavuzu bu tarihte yayımlanmamıştı.' },
+    { id: 'niksar-kilavuz', title: 'Niksar MYO Muhasebe ve Vergi Uygulamaları Bilgilendirme Kılavuzu', org: 'TOGÜ Niksar MYO', kind: 'birincil',
+      url: 'https://niksarmyo.gop.edu.tr/depo/menuler/birim_12024/bilgilenirme_kilavuzu_451/dosya_icerik/3588336/bilgilenirme_kilavuzu_20260221154610.pdf',
+      use: 'Niksar\'daki Genel Muhasebe I planı, ders kodları ve değerlendirme oranları.',
+      avoid: 'Tokat merkezdeki dersler; iki kampüste ders kodları ve not dağılımı farklı.' },
+    { id: 'takvim-sayfa', title: 'Akademik takvimler (bütün yıllar)', org: 'TOGÜ Öğrenci İşleri Daire Başkanlığı', kind: 'birincil',
+      url: 'https://ogr.gop.edu.tr/Icerik.aspx?d=tr-tr&mk=36710&m=akademik_takvim',
+      use: 'Yeni eğitim yılının takvimi yayımlandı mı diye bakmak. Mizan\'ın GitHub deposundaki haftalık kontrol bu sayfayı izler.',
+      avoid: 'Tek tek tarihler; onlar yıllık PDF\'lerde.' },
+    { id: 'takvim', title: '2026-2027 Eğitim Öğretim Yılı Akademik Takvimi', org: 'TOGÜ Öğrenci İşleri Daire Başkanlığı', kind: 'birincil',
+      url: 'https://ogr.gop.edu.tr/depo/menuler/birim_10307/akademik_takvim_189/html_icerik/files/tog%C3%BCweb2026.pdf',
+      use: 'Ders kaydı, muafiyet, ara sınav, final, bütünleme ve telafi tarihleri.',
+      avoid: 'Derslerin haftalık konuları. Hafta tarihleri bu takvimden hesaplandı; konu sırası kılavuzdan.' },
+    { id: 'yonetmelik', title: 'Ön Lisans ve Lisans Eğitim-Öğretim ve Sınav Yönetmeliği', org: 'TOGÜ', kind: 'birincil',
+      url: 'https://ogr.gop.edu.tr/depo/menuler/birim_10307/mevzuat_49/dosya_icerik/8696513/mevzuat_20231117104202.pdf',
+      use: 'Geçme notu (en az 60), final ve bütünlemede en az 50 kuralı, harf notları, devam zorunluluğu (teorik %70, uygulama %80).',
+      avoid: 'Derse özel ödev ve sınav oranları; bunlar dersin izlencesinde yazar.' },
+    { id: 'kdv-karar', title: '7346 sayılı Cumhurbaşkanı Kararı (KDV oranları)', org: 'Resmî Gazete, 7 Temmuz 2023', kind: 'birincil',
+      url: 'https://www.resmigazete.gov.tr/eskiler/2023/07/20230707-11.pdf',
+      use: 'Genel KDV oranının %18\'den %20\'ye, indirimli oranın %8\'den %10\'a çıkışı (10 Temmuz 2023\'ten itibaren).',
+      avoid: 'Bir malın hangi orana tabi olduğunun tek başına tespiti; oran listeleri sonradan değişebilir.' },
+    { id: 'kdv-kanun', title: '3065 sayılı Katma Değer Vergisi Kanunu', org: 'mevzuat.gov.tr', kind: 'birincil',
+      url: 'https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=3065&MevzuatTur=1&MevzuatTertip=5',
+      use: 'KDV\'nin konusu, matrahı, indirim mekanizması (191 ve 391 hesaplarının dayanağı).',
+      avoid: 'Güncel oran tablosu; oranlar Cumhurbaşkanı kararlarıyla belirlenir.' },
+    { id: 'vuk', title: '213 sayılı Vergi Usul Kanunu', org: 'mevzuat.gov.tr', kind: 'birincil',
+      url: 'https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=213&MevzuatTur=1&MevzuatTertip=4',
+      use: 'Defterler (yevmiye, büyük defter, envanter defteri), belgeler ve değerleme kuralları.',
+      avoid: 'Ders kitabı yerine okumak; önce derste konuyu öğren, sonra maddeye bak.' },
+    { id: 'msugt', title: '1 Sıra No\'lu Muhasebe Sistemi Uygulama Genel Tebliği', org: 'Resmî Gazete, 26 Aralık 1992, sayı 21447', kind: 'birincil',
+      url: 'https://www.resmigazete.gov.tr/arsiv/21447_1.pdf',
+      use: 'Tek düzen hesap planının resmî metni: hesap kodları, adları ve işleyiş açıklamaları.',
+      avoid: 'Hızlı arama; taranmış ve uzun bir belge.' },
+    { id: 'thp-liste', title: 'Tek düzen hesap planı listesi', org: 'muhasebetr.com', kind: 'ikincil',
+      url: 'https://www.muhasebetr.com/tekduzenhesapplani/',
+      use: 'Hesap koduna hızlıca bakmak. Buradaki hesap adları bu listeyle karşılaştırıldı.',
+      avoid: 'Ödevde atıf; resmî metin için tebliğe git.' },
+    { id: 'gib', title: 'Gelir İdaresi Başkanlığı', org: 'gib.gov.tr', kind: 'birincil', url: 'https://www.gib.gov.tr/',
+      use: 'Güncel vergi duyuruları, e-belge ve beyanname bilgileri.', avoid: 'Genel muhasebe kayıt tekniği.' },
+    { id: 'obs', title: 'Öğrenci Bilgi Sistemi', org: 'TOGÜ', kind: 'birincil', url: 'https://obs.gop.edu.tr/',
+      use: 'Ders kaydı, danışman onayı, notlar, ders programı.', avoid: 'Bu kitin yerine geçen bir bilgi kaynağı olarak değil, işlem yapmak için.' }
+  ];
+  const srcLink = (id, label) => { const s = SOURCES.find((x) => x.id === id); return s ? '<a href="' + esc(s.url) + '" target="_blank" rel="noopener">' + esc(label || s.title) + '</a>' : ''; };
+
+  /* ---------- 8. DURUM VE YÖNLENDİRME ---------- */
+  let campusKey = Store.get('campus', 'tokat');
+  if (!CAMPUS[campusKey]) campusKey = 'tokat';
+  const camp = () => CAMPUS[campusKey];
+  const asObject = (v) => (v && typeof v === 'object' && !Array.isArray(v) ? v : {});
+  let done = asObject(Store.get('done', {}));
+  let checks = asObject(Store.get('checks', {}));
+  const checkKey = (id) => YEAR_KEY + ':' + id;
+  let exIndex = Number(Store.get('exIndex', 0));
+  if (!Number.isInteger(exIndex) || exIndex < 0 || exIndex >= EXERCISES.length) exIndex = 0;
+  const drafts = {};
+  const PAGES = ['hafta', 'muhasebe', 'hesaplar', 'yevmiye', 'araclar', 'takvim', 'dersler', 'kaynaklar'];
+
+  function route(id, push) {
+    if (!PAGES.includes(id)) id = 'hafta';
+    PAGES.forEach((p) => { $('#page-' + p).hidden = p !== id; });
+    $$('#tabs button').forEach((b) => b.setAttribute('aria-current', b.dataset.route === id ? 'page' : 'false'));
+    if (push && location.hash !== '#' + id) { try { history.replaceState(null, '', '#' + id); } catch (e) { /* çerçeve izin vermezse adres değişmez */ } }
+    const btn = $('#tabs button[data-route="' + id + '"]');
+    if (btn && btn.scrollIntoView) btn.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+  }
+
+  /* ---------- 9. BU HAFTA ---------- */
+  function renderHafta() {
+    const ph = phase();
+    const c = camp();
+    const todayTxt = fDate(TODAY, { day: 'numeric', month: 'long', year: 'numeric', weekday: 'long' });
+    let where = '', focus = '';
+    if (isGuzWeek(ph)) {
+      const w = c.weeks[ph.n - 1];
+      const accs = accountsOfWeek(ph.n);
+      where = 'Güz yarıyılı · ' + ph.n + '. hafta';
+      focus = '<div class="focus"><div class="hd"><div><div class="eyebrow">Genel Muhasebe I · ' + esc(c.code) + ' · ' + weekRange(ph.n - 1) + '</div><h3>' + esc(w.t) + '</h3></div><button type="button" data-route="muhasebe">14 haftalık plan</button></div>' +
+        '<div class="bd">' + (w.o.length ? '<ul class="clean ticks">' + w.o.map((o) => '<li>' + esc(o) + '</li>').join('') + '</ul>' : '<p class="muted">Bu hafta konu anlatımı yok. Kampüsü, kütüphaneyi ve OBS\'yi tanımak için iyi bir zaman.</p>') +
+        (accs.length ? '<div class="row"><span class="small muted">Bu haftanın hesapları:</span>' + accs.map((a) => '<button type="button" class="chip ' + (a.up === 'B' ? 'dr' : 'cr') + '" data-acc="' + a.code + '">' + esc(accLabel(a.code)) + '</button>').join('') + '</div>' : '') +
+        '</div></div>';
+    } else if (ph.kind === 'stale') {
+      where = 'Takvim güncel değil';
+      focus = '<div class="note err"><strong>Bu sürümdeki takvim ' + esc(YEAR_KEY) + ' eğitim yılına ait ve süresi doldu.</strong> Tarihler, haftalar ve sınav günleri artık geçerli değil. Güncel tarihler için ' + srcLink('takvim-sayfa', 'TOGÜ akademik takvim sayfasına') + ' bak. Muhasebe konuları, hesap planı ve alıştırmalar geçerliliğini koruyor.</div>';
+    } else {
+      const T = TERMS[ph.term || 'guz'];
+      const msg = {
+        pre: ['Dönem henüz başlamadı', 'Güz yarıyılında derslerin başlangıcı: ' + fDate(TERMS.guz.weeks[0], { day: 'numeric', month: 'long', year: 'numeric' }) + '.'],
+        week: [TERM_LABEL[ph.term] + ' · ' + ph.n + '. hafta', 'Bahar döneminde Genel Muhasebe II var; bu kit şimdilik güz dönemini kapsıyor. Hesap planı ve yevmiye alıştırmaları temel konuları tekrar etmek için hâlâ işine yarar.'],
+        midterm: ['Ara sınav haftası', 'Ara sınavlar ' + fRange(T.midterm[0], T.midterm[1]) + '. Bu hafta ders yapılmıyor.'],
+        finals: ['Final haftası', 'Yarıyıl sonu sınavları ' + fRange(T.finals[0], T.finals[1]) + '. Dersi geçmek için final notu en az 50 olmalı.'],
+        makeup: ['Bütünleme haftası', 'Bütünleme sınavları ' + fRange(T.makeup[0], T.makeup[1]) + '.'],
+        break: ['Bayram haftası', 'Bu hafta akademik takvim dışında; ders yapılmıyor.'],
+        gap: ['Sınav arası', 'Finaller bitti. Bütünleme sınavlarının başlangıcı: ' + fDate(T.makeup[0], { day: 'numeric', month: 'long' }) + '.'],
+        semester: ['Yarıyıl tatili', 'Bahar yarıyılında derslerin başlangıcı: ' + fDate(TERMS.bahar.weeks[0], { day: 'numeric', month: 'long', year: 'numeric' }) + '. Genel Muhasebe II ile devam edeceksin.'],
+        summer: ['Yaz dönemi', 'Eğitim yılı bitti. Yaz okulu ve yeni yılın ders kaydı tarihleri için takvime bak.']
+      }[ph.kind];
+      where = msg[0];
+      focus = '<div class="note info">' + esc(msg[1]) + '</div>';
+    }
+    const upcoming = CAL.filter((e) => e.B >= TODAY).slice(0, 4);
+    const doneCount = EXERCISES.filter((_, i) => done[i]).length;
+    const other = isGuzWeek(ph) ? OTHER.filter((o) => o.weeks).map((o) => '<li><span class="c">' + esc(o.name) + ' <span class="muted mono small">' + esc(c.courses[o.key]) + '</span></span><span>' + esc(o.weeks[ph.n - 1]) + '</span></li>').join('') : '';
+    const dueList = STALE ? '<p class="muted small">Takvimin süresi dolduğu için tarih gösterilmiyor.</p>'
+      : upcoming.length ? '<ul class="clean due">' + upcoming.map((e) => { const n = days(TODAY, e.A); const w = TODAY >= e.A ? 'sürüyor' : (n === 1 ? 'yarın' : n + ' gün sonra'); return '<li><span>' + esc(e.t) + '<br><span class="when">' + fRange(e.A, e.B) + '</span></span><span class="chip ' + (n <= 7 ? 'warn' : '') + '">' + w + '</span></li>'; }).join('') + '</ul>'
+      : '<p class="muted small">' + esc(YEAR_KEY) + ' takviminde yaklaşan tarih kalmadı.</p>';
+    $('#page-hafta').innerHTML =
+      '<div class="today"><h2 id="h-hafta">' + esc(where) + '</h2><span class="muted">' + esc(todayTxt) + ' · ' + esc(c.label) + ' · takvim ' + esc(YEAR_KEY) + '</span>' + (DEMO_DATE ? '<span class="chip warn">Deneme tarihi etkin</span>' : '') + '</div>' +
+      '<div class="note warn"><strong>Dikkat, KDV oranı:</strong> Program kılavuzundaki çözümlü örnek KDV\'yi %18 ve %8 ile hesaplıyor. 10 Temmuz 2023\'ten beri genel oran %20, indirimli oran %10. Bu kitteki bütün alıştırmalar güncel oranla hazırlandı.</div>' +
+      focus +
+      '<div class="grid2">' +
+        '<div class="panel stack"><div class="eyebrow">Yaklaşan tarihler</div>' + dueList +
+        '<button type="button" data-route="takvim">Tüm takvim ve kontrol listesi</button></div>' +
+        '<div class="panel stack"><div class="eyebrow">Yevmiye alıştırması</div><p>ABC Ticaret\'in Aralık ayı kayıtları: açılış ve 8 işlem, güncel KDV oranıyla. Kaydını girersin, Mizan anında kontrol eder.</p>' +
+          '<div class="progress" aria-hidden="true"><span style="width:' + Math.round(doneCount / EXERCISES.length * 100) + '%"></span></div><p class="small muted">' + doneCount + ' / ' + EXERCISES.length + ' kayıt tamamlandı</p>' +
+          '<button type="button" class="primary" data-route="yevmiye">' + (doneCount ? 'Kaldığın yerden devam et' : 'Alıştırmaya başla') + '</button></div>' +
+      '</div>' +
+      (other ? '<div class="panel stack"><div class="eyebrow">Diğer derslerde bu hafta</div><ul class="clean courses">' + other + '</ul>' +
+        (campusKey === 'niksar' ? '<p class="small muted">Diğer derslerin konu sırası Tokat merkezin kılavuzundan alındı. Niksar\'daki sıra farklı olabilir.</p>' : '<p class="small muted">Konular 2025-2026 kılavuzundaki sıraya göre; hocan farklı bir sıra izleyebilir.</p>') + '</div>' : '');
+  }
+
+  /* ---------- 10. GENEL MUHASEBE I ---------- */
+  function renderMuhasebe() {
+    const c = camp(), ph = phase();
+    let rows = '';
+    c.weeks.forEach((w, i) => {
+      const n = i + 1, accs = accountsOfWeek(n);
+      const now = isGuzWeek(ph) && ph.n === n;
+      rows += '<div class="wk' + (now ? ' now' : '') + '"><div class="n">' + n + '<small>' + (now ? 'bu hafta' : 'hafta') + '</small></div><div class="b">' +
+        '<div class="d">' + weekRange(i) + '</div><div class="t">' + esc(w.t) + '</div>' +
+        (w.o.length ? '<details><summary>Kazanımlar (' + w.o.length + ')</summary><ul>' + w.o.map((o) => '<li>' + esc(o) + '</li>').join('') + '</ul></details>' : '') +
+        (accs.length ? '<div class="row">' + accs.map((a) => '<button type="button" class="chip ' + (a.up === 'B' ? 'dr' : 'cr') + '" data-acc="' + a.code + '">' + esc(accLabel(a.code)) + '</button>').join('') + '</div>' : '') +
+        '</div></div>';
+      if (n === 8) rows += '<div class="wk exam"><div class="n">—<small>sınav</small></div><div class="b"><div class="d">' + fRange(MIDTERM[0], MIDTERM[1]) + '</div><div class="t">Ara sınav haftası</div></div></div>';
+    });
+    rows += '<div class="wk exam"><div class="n">—<small>sınav</small></div><div class="b"><div class="d">' + fRange(FINALS[0], FINALS[1]) + ' · bütünleme ' + fRange(MAKEUP[0], MAKEUP[1]) + '</div><div class="t">Final ve bütünleme</div></div></div>';
+    $('#page-muhasebe').innerHTML =
+      '<div class="stack"><div class="eyebrow">' + esc(c.unit) + ' · ' + esc(c.code) + '</div><h2>Genel Muhasebe I</h2><p class="lead">' + esc(c.aim) + '</p></div>' +
+      '<div class="grid2"><div class="panel"><dl class="kv">' +
+        '<dt>Ders saati</dt><dd>' + esc(c.hours) + '</dd>' +
+        '<dt>Değerlendirme</dt><dd>' + esc(c.gradingText) + '</dd>' +
+        '<dt>Geçme koşulu</dt><dd>Ortalama en az 60 ve final (ya da bütünleme) notu en az 50</dd>' +
+        '<dt>Devam</dt><dd>Teorik saatlerin %70\'i, uygulama saatlerinin %80\'i zorunlu</dd>' +
+        '<dt>Kaynak kitap</dt><dd>' + esc(c.book) + '</dd>' +
+      '</dl></div><div class="note info"><strong>Tarihler nereden geliyor?</strong> Konu sırası ' + srcLink(c.src, '2025-2026 kılavuzundan') + ', hafta tarihleri ' + srcLink(YEAR.src, YEAR_KEY + ' akademik takviminden') + ' hesaplandı.' + (STALE ? ' <strong>Bu takvimin süresi doldu; tarihler güncel değil.</strong>' : '') + ' Yeni izlence yayımlanınca hocanın sırası esas alınır. Kampüsü sağ üstten değiştirebilirsin; plan ve not oranları kampüse göre değişir.</div></div>' +
+      '<div class="weeks">' + rows + '</div>';
+  }
+
+  /* ---------- 11. HESAP PLANI ---------- */
+  let accFilter = { q: '', cls: '' };
+  function renderHesaplar() {
+    const page = $('#page-hesaplar');
+    if (!page.dataset.ready) {
+      page.innerHTML =
+        '<div class="stack"><div class="eyebrow">Tek düzen hesap planı</div><h2>Hesap kodu nasıl okunur?</h2><p class="lead">Her hesabın üç haneli bir kodu var. İlk hane sınıfı, ilk iki hane grubu, üç hanenin tamamı hesabın kendisini gösterir. Kodu okumayı bilen, hesabın bilançonun neresinde durduğunu ve hangi tarafta arttığını tahmin edebilir.</p></div>' +
+        '<div class="decode" aria-label="153 kodunun çözümlemesi"><div><div class="code"><u>1</u>53</div><div class="lbl">Hesap sınıfı</div><div class="val">1 · Dönen Varlıklar</div></div><div><div class="code"><u>15</u>3</div><div class="lbl">Hesap grubu</div><div class="val">15 · Stoklar</div></div><div><div class="code"><u>153</u></div><div class="lbl">Hesap</div><div class="val">153 · Ticari Mallar</div></div></div>' +
+        '<div class="note info"><strong>Kural:</strong> Varlık hesapları (1 ve 2) ile gider hesapları borç tarafında artar. Kaynak hesapları (3, 4 ve 5) ile gelir hesapları alacak tarafında artar. Adında (-) olan hesaplar bulundukları grubu düzenler ve ters tarafta çalışır.</div>' +
+        '<div class="filters"><input type="search" id="accQ" placeholder="Kod ya da ad: 191, satıcılar, KDV" aria-label="Hesap ara"><select id="accCls" aria-label="Hesap sınıfı"><option value="">Tüm sınıflar</option>' +
+          Object.entries(CLASSES).map(([k, v]) => '<option value="' + k + '">' + k + ' · ' + esc(v) + '</option>').join('') + '</select></div>' +
+        '<div class="grid" id="accGrid"></div><p class="small muted">Listede ilk dönemde karşına çıkacak ' + ACCOUNTS.length + ' hesap var; hesap planının tamamı için ' + srcLink('msugt', 'resmî tebliğe') + ' bak. Hesap adları ' + srcLink('thp-liste', 'hesap planı listesiyle') + ' karşılaştırıldı.</p>';
+      page.dataset.ready = '1';
+      $('#accQ').addEventListener('input', (e) => { accFilter.q = e.target.value; drawAccounts(); });
+      $('#accCls').addEventListener('change', (e) => { accFilter.cls = e.target.value; drawAccounts(); });
+    }
+    drawAccounts();
+  }
+  function drawAccounts() {
+    const q = accFilter.q.trim().toLocaleLowerCase('tr-TR');
+    const list = ACCOUNTS.filter((a) => (!accFilter.cls || a.cls === accFilter.cls) && (!q || (a.code + ' ' + a.name + ' ' + a.text).toLocaleLowerCase('tr-TR').includes(q)));
+    $('#accGrid').innerHTML = list.length ? list.map((a) => {
+      const wk = weeksOf(a.code);
+      return '<article class="acct" id="acc-' + a.code + '"><div class="top2"><span class="code">' + a.code + '</span><div><div class="name">' + esc(a.name) + '</div><div class="grp">' + a.cls + ' ' + esc(CLASSES[a.cls]) + ' · ' + a.grp + ' ' + esc(GROUPS[a.grp] || '') + '</div></div></div>' +
+        '<p>' + esc(a.text) + '</p><div class="row"><span class="chip ' + (a.up === 'B' ? 'dr' : 'cr') + '">' + (a.up === 'B' ? 'Borç tarafında artar' : 'Alacak tarafında artar') + '</span>' +
+        (a.minus ? '<span class="chip warn">Düzenleyici (-)</span>' : '') +
+        (wk.length ? '<span class="chip">' + esc(camp().code) + ' · ' + wk.join('–') + '. hafta</span>' : '') + '</div></article>';
+    }).join('') : '<p class="muted">Bu aramaya uyan hesap yok. Kodu ya da adın bir kısmını dene.</p>';
+  }
+  function openAccount(code) {
+    accFilter = { q: '', cls: '' };
+    route('hesaplar', true);
+    renderHesaplar();
+    $('#accQ').value = ''; $('#accCls').value = '';
+    drawAccounts();
+    const el = $('#acc-' + code);
+    if (el) { el.scrollIntoView({ block: 'center' }); el.classList.add('flash'); setTimeout(() => el.classList.remove('flash'), 1600); }
+  }
+
+  /* ---------- 12. YEVMİYE ---------- */
+  const accOptions = (sel) => '<option value="">Hesap seç</option>' + Object.entries(CLASSES).map(([k, v]) =>
+    '<optgroup label="' + k + ' · ' + esc(v) + '">' + ACCOUNTS.filter((a) => a.cls === k).map((a) => '<option value="' + a.code + '"' + (a.code === sel ? ' selected' : '') + '>' + esc(accLabel(a.code)) + '</option>').join('') + '</optgroup>').join('');
+  const draftOf = (i) => drafts[i] || (drafts[i] = [{ a: '', s: '', t: '' }, { a: '', s: '', t: '' }, { a: '', s: '', t: '' }]);
+
+  function journalTable(ex, i) {
+    const dr = ex.sol.filter((l) => l[1] === 'B'), cr = ex.sol.filter((l) => l[1] === 'A');
+    return '<div class="ledger-wrap"><table class="jr"><caption>— ' + (i + 1) + ' — ' + esc(ex.date) + ' —</caption><tbody>' +
+      dr.map((l) => '<tr class="dr"><td class="acc">' + esc(accLabel(l[0])) + '</td><td class="num">' + money(l[2]) + '</td><td class="num"></td></tr>').join('') +
+      cr.map((l) => '<tr class="cr"><td class="acc">' + esc(accLabel(l[0])) + '</td><td class="num"></td><td class="num">' + money(l[2]) + '</td></tr>').join('') +
+      '<tr class="exp"><td colspan="3">' + esc(ex.exp) + '</td></tr></tbody></table></div>';
+  }
+
+  function renderYevmiye() {
+    const ex = EXERCISES[exIndex];
+    const rows = draftOf(exIndex);
+    const doneCount = EXERCISES.filter((_, i) => done[i]).length;
+    $('#page-yevmiye').innerHTML =
+      '<div class="stack"><div class="eyebrow">Alıştırma · ABC Ticaret, Aralık</div><h2>Yevmiye kaydı</h2><p class="lead">Program kılavuzundaki Genel Muhasebe I örneğinden uyarlandı; KDV güncel oranla (%20) hesaplanıyor. Her işlem için hesabı, tarafı ve tutarı gir. Borç ve alacak toplamı eşit olmalı.</p></div>' +
+      '<div class="steps" role="list">' + EXERCISES.map((e, i) => '<button type="button" role="listitem" data-ex="' + i + '" class="' + (done[i] ? 'done' : '') + '"' + (i === exIndex ? ' aria-current="step"' : '') + ' title="' + esc(e.title) + '">' + (i === 0 ? 'Açılış' : e.date) + '</button>').join('') + '</div>' +
+      '<div class="panel stack"><div class="row" style="justify-content:space-between"><div><div class="eyebrow">' + (exIndex === 0 ? 'Açılış' : 'Madde ' + (exIndex + 1)) + ' · ' + esc(ex.date) + '</div><h3>' + esc(ex.title) + '</h3></div>' + (done[exIndex] ? '<span class="chip ok">Tamamlandı</span>' : '') + '</div>' +
+        '<p class="q">' + esc(ex.q) + '</p>' +
+        '<div class="entry" id="entry"><div class="erow head"><span>Hesap</span><span>Taraf</span><span>Tutar (TL)</span><span></span></div>' +
+          rows.map((r, k) => '<div class="erow" data-k="' + k + '"><select class="acc-sel" id="ex' + exIndex + '-a' + k + '" aria-label="Satır ' + (k + 1) + ' hesap">' + accOptions(r.a) + '</select>' +
+            '<select id="ex' + exIndex + '-s' + k + '" aria-label="Satır ' + (k + 1) + ' taraf"><option value="">Taraf</option><option value="B"' + (r.s === 'B' ? ' selected' : '') + '>Borç</option><option value="A"' + (r.s === 'A' ? ' selected' : '') + '>Alacak</option></select>' +
+            '<input type="text" inputmode="decimal" id="ex' + exIndex + '-t' + k + '" aria-label="Satır ' + (k + 1) + ' tutar" placeholder="0" value="' + esc(r.t) + '">' +
+            '<button type="button" class="ghost x" data-del="' + k + '" aria-label="Satır ' + (k + 1) + '\'i sil">✕</button></div>').join('') +
+        '</div>' +
+        '<div class="totals" id="totals"></div>' +
+        '<div class="row"><button type="button" id="addRow">Satır ekle</button><button type="button" class="primary" id="check">Kaydı kontrol et</button><button type="button" id="reveal">Çözümü göster</button>' +
+          (exIndex < EXERCISES.length - 1 ? '<button type="button" class="ghost" id="next">Sonraki işlem →</button>' : '') + '</div>' +
+        '<div id="fb" aria-live="polite"></div>' +
+      '</div>' +
+      '<div class="grid2"><div class="panel stack"><div class="eyebrow">Kayıt yaparken</div><ul class="clean ticks">' +
+        '<li>Her kayıtta borç toplamı alacak toplamına eşittir.</li><li>Varlık artıyorsa borç, azalıyorsa alacak.</li><li>Borç ya da sermaye artıyorsa alacak, azalıyorsa borç.</li><li>Gider borca, gelir alacağa yazılır.</li><li>Alışta ödenen KDV 191\'e borç, satışta hesaplanan KDV 391\'e alacak.</li></ul></div>' +
+        '<div class="panel stack"><div class="eyebrow">Mizan</div><p class="small muted">Tamamladığın ' + doneCount + ' kaydın büyük defter toplamları. Borç ve alacak sütunları hep eşit çıkar; çıkmıyorsa bir kayıt hatalıdır.</p><div id="mizan"></div>' +
+          '<div id="resetBox" class="inline-confirm"><button type="button" class="ghost" id="reset">İlerlemeyi sıfırla</button></div></div></div>';
+    bindEntry();
+    drawTotals();
+    drawMizan();
+  }
+
+  function readRows() {
+    return $$('#entry .erow[data-k]').map((row) => ({ a: $('select.acc-sel', row).value, s: $$('select', row)[1].value, t: $('input', row).value }));
+  }
+  function drawTotals() {
+    const rows = readRows();
+    let b = 0, a = 0;
+    rows.forEach((r) => { const v = parseAmount(r.t); if (!isNaN(v)) { if (r.s === 'B') b += v; if (r.s === 'A') a += v; } });
+    const eq = Math.round(b * 100) === Math.round(a * 100) && b > 0;
+    $('#totals').innerHTML = 'Borç toplamı <b>' + money(b) + '</b> Alacak toplamı <b>' + money(a) + '</b>' + (b || a ? '<span class="chip ' + (eq ? 'ok' : 'warn') + '">' + (eq ? 'Denk' : 'Fark ' + money(Math.abs(b - a))) + '</span>' : '');
+  }
+  function bindEntry() {
+    const entry = $('#entry');
+    entry.addEventListener('input', () => { drafts[exIndex] = readRows(); drawTotals(); $('#fb').innerHTML = ''; });
+    entry.addEventListener('change', () => { drafts[exIndex] = readRows(); drawTotals(); $('#fb').innerHTML = ''; });
+    entry.addEventListener('click', (e) => {
+      const k = e.target.closest('[data-del]');
+      if (!k) return;
+      const rows = readRows();
+      if (rows.length <= 2) { feedback('err', 'Bir yevmiye kaydında en az iki satır olur: bir borçlu, bir alacaklı hesap.'); return; }
+      rows.splice(+k.dataset.del, 1); drafts[exIndex] = rows; renderYevmiye();
+    });
+    $('#addRow').onclick = () => { const rows = readRows(); rows.push({ a: '', s: '', t: '' }); drafts[exIndex] = rows; renderYevmiye(); const last = $$('#entry select.acc-sel').pop(); if (last) last.focus(); };
+    $('#check').onclick = checkEntry;
+    $('#reveal').onclick = () => { const ex = EXERCISES[exIndex]; feedback('info', '<strong>Çözüm</strong>' + journalTable(ex, exIndex) + '<p style="margin-top:8px">' + esc(ex.note) + '</p>', true); };
+    if ($('#next')) $('#next').onclick = () => go(exIndex + 1);
+    $('#reset').onclick = () => {
+      $('#resetBox').innerHTML = '<span>Tamamlanan kayıtlar silinsin mi?</span><button type="button" id="resetYes">Evet, sıfırla</button><button type="button" class="ghost" id="resetNo">Vazgeç</button>';
+      $('#resetYes').onclick = () => { done = {}; Store.set('done', done); Object.keys(drafts).forEach((k) => delete drafts[k]); go(0); };
+      $('#resetNo').onclick = () => renderYevmiye();
+    };
+  }
+  function feedback(kind, html, raw) {
+    $('#fb').innerHTML = '<div class="note ' + kind + '">' + (raw ? html : html) + '</div>';
+  }
+  function go(i) { exIndex = Math.max(0, Math.min(EXERCISES.length - 1, i)); Store.set('exIndex', exIndex); renderYevmiye(); $('#page-yevmiye').scrollIntoView({ block: 'start' }); }
+
+  function checkEntry() {
+    const ex = EXERCISES[exIndex];
+    const all = readRows().map((r, k) => ({ ...r, line: k + 1 }));
+    const rows = all.filter((r) => r.a || r.s || r.t);
+    if (rows.length < 2) { feedback('err', 'En az iki satır doldur: bir borçlu ve bir alacaklı hesap.'); return; }
+    for (const r of rows) {
+      const v = parseAmount(r.t);
+      if (!r.a) { feedback('err', r.line + '. satırda hesap seçilmedi.'); return; }
+      if (!r.s) { feedback('err', r.line + '. satırda borç mu alacak mı olduğu seçilmedi.'); return; }
+      if (!(v > 0)) { feedback('err', r.line + '. satırdaki tutar okunamadı. 15000 ya da 15.000 biçiminde yaz.'); return; }
+    }
+    if (ex.kdv) {
+      const old = Math.round(ex.kdv.base * 0.18 * 100), oldR = Math.round(ex.kdv.base * 0.08 * 100);
+      const hit = rows.find((r) => (r.a === '191' || r.a === '391') && [old, oldR].includes(Math.round(parseAmount(r.t) * 100)));
+      if (hit) { feedback('warn', '<strong>Eski oran.</strong> ' + esc(accLabel(hit.a)) + ' satırında ' + money(parseAmount(hit.t)) + ' TL yazdın; bu %18 ya da %8 ile hesaplanmış. Genel oran 10 Temmuz 2023\'ten beri %20: ' + money(ex.kdv.base) + ' × %20 = ' + money(ex.kdv.base * 0.2) + ' TL.'); return; }
+    }
+    let b = 0, a = 0;
+    rows.forEach((r) => { const v = parseAmount(r.t); if (r.s === 'B') b += v; else a += v; });
+    if (Math.round(b * 100) !== Math.round(a * 100)) { feedback('err', '<strong>Kayıt denk değil.</strong> Borç toplamı ' + money(b) + ' TL, alacak toplamı ' + money(a) + ' TL. Fark ' + money(Math.abs(b - a)) + ' TL.'); return; }
+    const sum = (list) => { const m = {}; list.forEach(([c, s, v]) => { const k = c + s; m[k] = (m[k] || 0) + Math.round(v * 100); }); return m; };
+    const mine = sum(rows.map((r) => [r.a, r.s, parseAmount(r.t)]));
+    const want = sum(ex.sol);
+    const issues = [];
+    Object.keys(want).forEach((k) => {
+      const code = k.slice(0, 3), side = k[3], other = code + (side === 'B' ? 'A' : 'B');
+      if (mine[k] === want[k]) return;
+      if (mine[k] == null && mine[other] != null) issues.push(esc(accLabel(code)) + ' ters tarafta: ' + (side === 'B' ? 'borç' : 'alacak') + ' tarafına yazılmalı.');
+      else if (mine[k] == null) issues.push(esc(accLabel(code)) + ' kayıtta eksik.');
+      else issues.push(esc(accLabel(code)) + ' tutarı yanlış (' + money(mine[k] / 100) + ' TL yazdın).');
+    });
+    Object.keys(mine).forEach((k) => {
+      const code = k.slice(0, 3), other = code + (k[3] === 'B' ? 'A' : 'B');
+      if (want[k] == null && want[other] == null) issues.push(esc(accLabel(code)) + ' bu işlemde kullanılmıyor.');
+    });
+    if (issues.length) { feedback('warn', '<strong>Kayıt denk ama doğru değil.</strong><ul style="margin:6px 0 0;padding-left:18px">' + issues.slice(0, 4).map((x) => '<li>' + x + '</li>').join('') + '</ul>'); return; }
+    done[exIndex] = true; Store.set('done', done);
+    const allDone = EXERCISES.every((_, i) => done[i]);
+    renderYevmiye();
+    feedback('ok', '<strong>Doğru.</strong> ' + esc(ex.note) + journalTable(ex, exIndex) + (allDone ? '<p style="margin-top:8px"><strong>Aralık ayının bütün kayıtlarını tamamladın.</strong> Aşağıdaki mizanda borç ve alacak toplamları eşit.</p>' : ''), true);
+  }
+
+  function drawMizan() {
+    const bal = {};
+    EXERCISES.forEach((ex, i) => { if (!done[i]) return; ex.sol.forEach(([c, s, v]) => { bal[c] = bal[c] || { b: 0, a: 0 }; bal[c][s === 'B' ? 'b' : 'a'] += v; }); });
+    const codes = Object.keys(bal).sort();
+    if (!codes.length) { $('#mizan').innerHTML = '<p class="muted small">Henüz tamamlanan kayıt yok. İlk kaydı tamamladığında mizan burada oluşur.</p>'; return; }
+    let tb = 0, ta = 0, tbb = 0, tab = 0;
+    const rows = codes.map((c) => {
+      const x = bal[c], d = x.b - x.a; tb += x.b; ta += x.a; if (d > 0) tbb += d; else tab += -d;
+      return '<tr><td>' + esc(accLabel(c)) + '</td><td class="num">' + money(x.b) + '</td><td class="num">' + money(x.a) + '</td><td class="num">' + (d > 0 ? money(d) : '') + '</td><td class="num">' + (d < 0 ? money(-d) : '') + '</td></tr>';
+    }).join('');
+    $('#mizan').innerHTML = '<div class="ledger-wrap"><table class="mz"><thead><tr><th>Hesap</th><th>Borç</th><th>Alacak</th><th>Borç bakiyesi</th><th>Alacak bakiyesi</th></tr></thead><tbody>' + rows +
+      '</tbody><tfoot><tr><td>Toplam</td><td class="num">' + money(tb) + '</td><td class="num">' + money(ta) + '</td><td class="num">' + money(tbb) + '</td><td class="num">' + money(tab) + '</td></tr></tfoot></table></div>' +
+      '<p class="small ' + (Math.round(tb) === Math.round(ta) ? 'muted' : '') + '">' + (Math.round(tbb) === Math.round(tab) ? 'Borç ve alacak bakiyeleri eşit: mizan denk.' : 'Mizan denk değil.') + ' Dönem sonunda 191 ve 391 hesapları birbirine mahsup edilir; bu konu Genel Muhasebe I\'de KDV haftasında işlenir.</p>';
+  }
+
+  /* ---------- 13. NOT VE KDV HESAPLAYICI ---------- */
+  function renderAraclar() {
+    const page = $('#page-araclar');
+    const tokatGm = campusKey === 'tokat';
+    page.innerHTML =
+      '<div class="stack"><div class="eyebrow">Hesap araçları</div><h2>Finalden kaç almalıyım?</h2><p class="lead">TOGÜ yönetmeliğine göre bir dersi geçmek için başarı notunun en az 60, final ya da bütünleme notunun en az 50 olması gerekiyor. Ara sınav ve ödev notunu gir; geçmek için gereken en düşük final notunu gör.</p></div>' +
+      '<div class="grid2"><div class="panel stack">' +
+        '<form class="form" id="gradeForm" novalidate>' +
+          '<label for="gPreset" style="grid-column:1/-1">Not dağılımı<select id="gPreset"><option value="40-60">Ara sınav %40 + final %60 (çoğu ders)</option><option value="20-20-60"' + (tokatGm ? ' selected' : '') + '>Ara sınav %20 + ödev %20 + final %60 (Tokat · Genel Muhasebe I)</option></select></label>' +
+          '<label for="gVize">Ara sınav notu<input type="number" id="gVize" min="0" max="100" step="1" value="55" inputmode="numeric"><span class="err-text" id="eVize"></span></label>' +
+          '<label for="gOdev" id="lOdev">Ödev notu<input type="number" id="gOdev" min="0" max="100" step="1" value="70" inputmode="numeric"><span class="err-text" id="eOdev"></span></label>' +
+        '</form>' +
+        '<div><div class="eyebrow">Geçmek için gereken final notu</div><div class="result num" id="gOut">—</div><p class="small muted" id="gWhy"></p></div>' +
+        '<p class="small muted">Oranlar dersin izlencesinde yazar; hocanın ilan ettiği oran farklıysa o geçerlidir. Hesap, ortalamanın nasıl yuvarlandığını varsaymaz: bulduğu not, yuvarlama olmadan da 60\'ı tutturur.</p>' +
+      '</div>' +
+      '<div class="panel stack"><div class="eyebrow">Harf notları (yönetmelik, madde 29)</div><table class="grades"><thead><tr><th>Puan</th><th>Harf</th><th>Katsayı</th><th>Durum</th></tr></thead><tbody>' +
+        [['90–100', 'AA', '4,00', 'Pekiyi'], ['85–89', 'BA', '3,50', 'Pekiyi'], ['75–84', 'BB', '3,00', 'İyi'], ['70–74', 'CB', '2,50', 'İyi'], ['60–69', 'CC', '2,00', 'Orta'], ['55–59', 'DC', '1,50', 'Başarısız'], ['45–54', 'DD', '1,00', 'Başarısız'], ['40–44', 'FD', '0,50', 'Başarısız'], ['0–39', 'FF', '0,00', 'Başarısız']]
+          .map((r) => '<tr><td class="num">' + r[0] + '</td><td class="num">' + r[1] + '</td><td class="num">' + r[2] + '</td><td>' + (r[3] === 'Başarısız' ? '<span class="chip cr">Başarısız</span>' : r[3]) + '</td></tr>').join('') +
+      '</tbody></table><p class="small muted">DZ: devamsız, GR: sınava girmedi. Devam zorunluluğu teorik derslerde %70, uygulamada %80.</p></div></div>' +
+      '<div class="stack" style="margin-top:12px"><div class="eyebrow">KDV</div><h2>KDV dahil mi, hariç mi?</h2><p class="lead">Ticari Matematik\'in ilk haftasındaki iç yüzde ve dış yüzde hesabı. Hariç tutardan dahil tutara çarparak, dahil tutardan hariç tutara bölerek gidilir.</p></div>' +
+      '<div class="panel stack"><form class="form" id="kdvForm" novalidate>' +
+        '<label for="kTutar">Tutar (TL)<input type="text" id="kTutar" inputmode="decimal" value="18.000"><span class="err-text" id="eTutar"></span></label>' +
+        '<label for="kOran">KDV oranı<select id="kOran"><option value="20">%20 (genel oran)</option><option value="10">%10</option><option value="1">%1</option></select></label>' +
+        '<label for="kYon">Girdiğim tutar<select id="kYon"><option value="dahil">KDV dahil</option><option value="haric">KDV hariç</option></select></label>' +
+      '</form><div class="grid" id="kOut"></div><p class="small muted" id="kFormula"></p>' +
+      '<p class="small muted">Oranlar ' + srcLink('kdv-karar', '7346 sayılı Cumhurbaşkanı Kararı') + ' ile 10 Temmuz 2023\'ten beri geçerli. Bir malın hangi orana tabi olduğunu güncel mevzuattan kontrol et.</p></div>';
+
+    const calcGrade = () => {
+      const preset = $('#gPreset').value, withOdev = preset === '20-20-60';
+      $('#lOdev').hidden = !withOdev;
+      const v = $('#gVize').value, o = $('#gOdev').value;
+      const bad = (x) => x === '' || isNaN(+x) || +x < 0 || +x > 100;
+      $('#eVize').textContent = bad(v) ? '0 ile 100 arasında bir not gir.' : '';
+      $('#eOdev').textContent = withOdev && bad(o) ? '0 ile 100 arasında bir not gir.' : '';
+      if (bad(v) || (withOdev && bad(o))) { $('#gOut').textContent = '—'; $('#gWhy').textContent = ''; return; }
+      const known = withOdev ? 0.2 * +v + 0.2 * +o : 0.4 * +v;
+      const raw = Math.ceil(((60 - known) / 0.6) - 1e-9);
+      const need = Math.max(50, raw);
+      if (need > 100) { $('#gOut').textContent = '—'; $('#gWhy').textContent = 'Finalden 100 alsan bile ortalama 60\'a ulaşmıyor (ulaşabileceğin en yüksek ortalama ' + (known + 60).toFixed(1).replace('.', ',') + '). Bütünlemede de aynı hesap geçerli.'; return; }
+      $('#gOut').textContent = need;
+      $('#gWhy').textContent = raw <= 50 ? 'Ortalama için ' + Math.max(0, raw) + ' yeterdi, ama final notunun en az 50 olması gerekiyor.' : 'Bu notla ortalaman ' + (known + 0.6 * need).toFixed(1).replace('.', ',') + ' olur.';
+    };
+    const calcKdv = () => {
+      const t = parseAmount($('#kTutar').value), r = +$('#kOran').value / 100, dahil = $('#kYon').value === 'dahil';
+      if (!(t > 0)) { $('#eTutar').textContent = 'Sıfırdan büyük bir tutar gir: 18000 ya da 18.000.'; $('#kOut').innerHTML = ''; $('#kFormula').textContent = ''; return; }
+      $('#eTutar').textContent = '';
+      const base = dahil ? t / (1 + r) : t, kdv = base * r, total = base + kdv;
+      const tile = (l, v) => '<div class="panel" style="padding:12px 14px"><div class="eyebrow">' + l + '</div><div class="num" style="font-size:1.35rem;font-weight:600">' + money(v) + ' TL</div></div>';
+      $('#kOut').innerHTML = tile('KDV hariç tutar (matrah)', base) + tile('KDV', kdv) + tile('KDV dahil tutar', total);
+      const pct = String(r * 100).replace('.', ',');
+      $('#kFormula').textContent = dahil ? 'Matrah = ' + money(t) + ' ÷ ' + (1 + r).toFixed(2).replace('.', ',') + ' · KDV = matrah × %' + pct : 'KDV = ' + money(t) + ' × %' + pct + ' · Toplam = matrah + KDV';
+    };
+    ['gPreset', 'gVize', 'gOdev'].forEach((id) => $('#' + id).addEventListener('input', calcGrade));
+    $('#gPreset').addEventListener('change', calcGrade);
+    ['kTutar', 'kOran', 'kYon'].forEach((id) => { $('#' + id).addEventListener('input', calcKdv); $('#' + id).addEventListener('change', calcKdv); });
+    $('#gradeForm').addEventListener('submit', (e) => e.preventDefault());
+    $('#kdvForm').addEventListener('submit', (e) => e.preventDefault());
+    calcGrade(); calcKdv();
+  }
+
+  /* ---------- 14. TAKVİM VE KONTROL LİSTESİ ---------- */
+  function renderTakvim() {
+    const item = (e) => {
+      const past = e.B < TODAY, now = TODAY >= e.A && TODAY <= e.B, n = days(TODAY, e.A), key = checkKey(e.id);
+      const st = past ? '<span class="chip">Geçti</span>' : now ? '<span class="chip acc">Sürüyor</span>' : n <= 14 ? '<span class="chip warn">' + (n === 1 ? 'Yarın' : n + ' gün') + '</span>' : '<span class="chip">' + n + ' gün</span>';
+      return '<li class="' + (past ? 'past' : '') + '"><span class="dt">' + fRange(e.A, e.B) + '</span><span class="tx"><strong>' + esc(e.t) + '</strong><small>' + esc(e.s) + '</small>' +
+        (e.check ? '<label for="chk-' + e.id + '"><input type="checkbox" id="chk-' + e.id + '" data-chk="' + esc(key) + '"' + (checks[key] ? ' checked' : '') + '> ' + esc(e.check) + '</label>' : '') + '</span>' + st + '</li>';
+    };
+    const groups = ['guz', 'bahar', 'yaz'].map((t) => { const list = CAL.filter((e) => e.term === t); return list.length ? '<div class="stack"><h3>' + TERM_LABEL[t] + '</h3><div class="panel"><ul class="clean cal">' + list.map(item).join('') + '</ul></div></div>' : ''; }).join('');
+    $('#page-takvim').innerHTML =
+      '<div class="stack"><div class="eyebrow">' + esc(YEAR_KEY) + ' eğitim yılı</div><h2>Takvim ve kontrol listesi</h2><p class="lead">TOGÜ\'nün ' + esc(YEAR_KEY) + ' genel akademik takviminden. İşaretlediğin kutular yalnızca bu cihazda saklanır.</p></div>' +
+      (STALE ? '<div class="note err"><strong>Bu takvimin süresi doldu.</strong> Aşağıdaki tarihler ' + esc(YEAR_KEY) + ' yılına ait. Güncel takvim için ' + srcLink('takvim-sayfa', 'TOGÜ akademik takvim sayfasına') + ' bak.</div>' : '') +
+      groups +
+      '<div class="note info">Bayram haftaları akademik takvim dışında tutulur ve o haftalarda ders yapılmaz. Kaynak: ' + srcLink(YEAR.src, 'akademik takvim') + '. Takvim her yıl yeniden yayımlanır; Mizan yeni yılın takvimi eklenene kadar son eklenen yılı gösterir ve süresi dolunca bunu açıkça belirtir.</div>';
+    $$('#page-takvim [data-chk]').forEach((c) => c.addEventListener('change', () => { checks[c.dataset.chk] = c.checked; Store.set('checks', checks); }));
+  }
+
+  /* ---------- 15. DİĞER DERSLER ---------- */
+  function renderDersler() {
+    const c = camp(), ph = phase();
+    $('#page-dersler').innerHTML =
+      '<div class="stack"><div class="eyebrow">1. yarıyıl</div><h2>Diğer dersler</h2><p class="lead">Genel Muhasebe I dışındaki alan dersleri. Konu sırası ve kaynak kitaplar ' + srcLink('tokat-kilavuz', 'Tokat merkezin 2025-2026 kılavuzundan') + '.' + (campusKey === 'niksar' ? ' Niksar\'da ders kodları farklı; konu sırası da farklı olabilir.' : '') + '</p></div>' +
+      '<div class="grid2">' + OTHER.map((o) => {
+        const list = o.weeks ? '<details' + (isGuzWeek(ph) ? ' open' : '') + '><summary class="small muted">14 haftalık konu listesi</summary><ol style="margin:8px 0 0;padding-left:22px;font-size:.9rem">' +
+          o.weeks.map((w, i) => '<li' + (isGuzWeek(ph) && ph.n === i + 1 ? ' style="font-weight:700;color:var(--accent)"' : '') + '>' + esc(w) + '</li>').join('') + '</ol></details>' : '';
+        return '<article class="panel stack"><div><div class="eyebrow mono">' + esc(c.courses[o.key]) + '</div><h3>' + esc(o.name) + '</h3></div><dl class="kv"><dt>Ders saati</dt><dd>' + esc(o.hours) + '</dd><dt>Değerlendirme</dt><dd>' + esc(o.grading) + '</dd>' +
+          (o.book ? '<dt>Kaynak kitap</dt><dd>' + esc(o.book) + '</dd>' : '') + '</dl>' + (o.extra ? '<p class="small muted">' + esc(o.extra) + '</p>' : '') + list + '</article>';
+      }).join('') + '</div>' +
+      '<div class="note info">Ortak zorunlu dersler: Atatürk İlkeleri ve İnkılap Tarihi I (AİİT101) ve Türk Dili I (TD101), haftada ikişer saat. Bahar döneminde Genel Muhasebe II, Ticaret Hukuku, Makro Ekonomi, İletişim ve İleri Düzey Ofis Uygulamaları başlar.</div>';
+  }
+
+  /* ---------- 16. KAYNAKLAR ---------- */
+  function renderKaynaklar() {
+    $('#page-kaynaklar').innerHTML =
+      '<div class="stack"><div class="eyebrow">Kaynak izi</div><h2>Bu bilgiler nereden geliyor?</h2><p class="lead">Mizan\'daki her bilgi aşağıdaki belgelerden birine dayanır. Her kaynak için neye bakılacağı ve neye bakılmayacağı ayrı yazıldı. Bağlantılar 24 Eylül 2026\'da HTTP ile denetlendi.</p></div>' +
+      '<div class="panel"><ul class="clean src">' + SOURCES.map((s) =>
+        '<li><div class="row"><a href="' + esc(s.url) + '" target="_blank" rel="noopener"><strong>' + esc(s.title) + '</strong></a><span class="chip ' + (s.kind === 'birincil' ? 'acc' : 'warn') + '">' + (s.kind === 'birincil' ? 'Birincil kaynak' : 'İkincil kaynak') + '</span></div>' +
+        '<span class="small muted">' + esc(s.org) + '</span><div class="uses"><div><span class="eyebrow">Ne için</span><br>' + esc(s.use) + '</div><div><span class="eyebrow">Ne için değil</span><br>' + esc(s.avoid) + '</div></div></li>').join('') + '</ul></div>';
+  }
+
+  /* ---------- 17. BAŞLAT ---------- */
+  function renderAll() {
+    renderHafta(); renderMuhasebe(); renderHesaplar(); renderYevmiye(); renderAraclar(); renderTakvim(); renderDersler(); renderKaynaklar();
+  }
+  document.addEventListener('click', (e) => {
+    const acc = e.target.closest('[data-acc]');
+    if (acc) { e.preventDefault(); openAccount(acc.dataset.acc); return; }
+    const ex = e.target.closest('[data-ex]');
+    if (ex) { go(+ex.dataset.ex); return; }
+    const r = e.target.closest('[data-route]');
+    if (r) { e.preventDefault(); route(r.dataset.route, true); window.scrollTo({ top: 0 }); }
+  });
+  window.addEventListener('hashchange', () => route(location.hash.slice(1)));
+  const sel = $('#campus');
+  sel.value = campusKey;
+  sel.addEventListener('change', () => { campusKey = sel.value; Store.set('campus', campusKey); renderAll(); });
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) return;
+    const t = todayDate();
+    if (+t === +TODAY) return;
+    TODAY = t; loadYear();
+    const cur = PAGES.find((p) => !$('#page-' + p).hidden) || 'hafta';
+    renderAll(); route(cur);
+  });
+  renderAll();
+  route(location.hash.slice(1) || 'hafta');
+})();
+</script>
+</body>
+</html>

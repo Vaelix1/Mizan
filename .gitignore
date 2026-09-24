@@ -1,0 +1,11 @@
+# İşletim sistemi
+Thumbs.db
+desktop.ini
+.DS_Store
+
+# Python
+__pycache__/
+*.pyc
+
+# Takvim kontrolünün yerel raporu
+rapor.md
