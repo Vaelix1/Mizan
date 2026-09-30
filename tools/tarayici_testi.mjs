@@ -229,7 +229,21 @@ test('Veri denetimi: bütün maddeler geçiyor', async () => {
   dogrula(r.length >= 13, 'Denetim sonucu gelmedi: ' + r.join('; '));
   const kalan = r.filter((x) => !/Geçti$/.test(x));
   dogrula(!kalan.length, kalan.join('\n'));
-  return r.length + ' madde';
+  // Boş an bildirmeyen tarayıcı: requestIdleCallback yalnızca zaman aşımıyla çağrılır. Denetim yine de kısa sürede bitmeli.
+  const { identifier } = await S.gonder('Page.addScriptToEvaluateOnNewDocument', { source: 'window.requestIdleCallback=function(f,o){return setTimeout(function(){f({didTimeout:true,timeRemaining:function(){return 0;}});},(o&&o.timeout)||1);};' });
+  try {
+    await yenile(S, 'hakkinda');
+    const sure = await js(S, async () => {
+      const t0 = performance.now();
+      for (let i = 0; i < 300 && !__t.$('#auditList .tag'); i++) await __t.bekle(50);
+      return __t.$('#auditList .tag') ? Math.round(performance.now() - t0) : null;
+    });
+    dogrula(sure !== null && sure < 5000, 'Boş an olmadan denetim süresi: ' + sure + ' ms');
+    return r.length + ' madde · boş an olmadan ' + sure + ' ms';
+  } finally {
+    await S.gonder('Page.removeScriptToEvaluateOnNewDocument', { identifier });
+    await yenile(S, 'ozet');
+  }
 });
 
 test('Yatay taşma yok (320–1440 px); mobilde dokunma hedefleri en az 40 px', async () => {
@@ -413,7 +427,7 @@ test('Kartlar: çevirme, derecelendirme, deste değiştirme, klavye', async () =
   });
   dogrula(r.arka && r.kutu === 1 && r.yeni !== r.on, 'Kart akışı: ' + JSON.stringify(r));
   dogrula(r.klavye, 'Enter ile çevrilmedi.');
-  dogrula(/esas|ölçülme|sorumluluk|Kişilik|süreklilik|Dönemsellik|Tutarlılık|açıklama|İhtiyatlılık|Önemlilik|önceliği|belgelendirme/.test(r.kavram), 'Kavram destesi: ' + r.kavram);
+  dogrula(/esas|ölçülme|sorumluluk|Kişilik|sürekliliği|Dönemsellik|Tutarlılık|açıklama|İhtiyatlılık|Önemlilik|önceliği|belgelendirme/.test(r.kavram), 'Kavram destesi: ' + r.kavram);
   dogrula(/\/164/.test(r.ozet || ''), 'Özet kart sayacı: ' + r.ozet);
   return r.ozet;
 });

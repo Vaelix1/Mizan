@@ -984,7 +984,7 @@ summary{min-height:44px;padding:11px 0;cursor:pointer}
   ];
   const PAGES = ['ozet', 'notlar', 'konu', 'alistirma', 'tekrar', 'hesaplar', 'sozluk', 'araclar', 'takvim', 'dersler', 'diger', 'nasil', 'hakkinda'];
   const PARENT = { konu: 'notlar', hesaplar: 'diger', sozluk: 'diger', araclar: 'diger', takvim: 'diger', dersler: 'diger', nasil: 'diger', hakkinda: 'diger' };
-  const VERSION = '1.1.0';
+  const VERSION = '1.1.1';
 
   /* ---------- 12. DURUM ---------- */
   let campusKey = Store.get('campus', 'tokat');
@@ -1727,12 +1727,13 @@ summary{min-height:44px;padding:11px 0;cursor:pointer}
   function runAudit(done) {
     const { jobs, out } = auditJobs();
     let i = 0;
+    // Tarayıcı boş an bildirmezse çağrı zaman aşımıyla gelir (timeRemaining 0); o zaman 8 ms'lik pay kullanılır.
     const step = (dl) => {
       const t0 = performance.now();
-      do { jobs[i++](); } while (i < jobs.length && (dl && dl.timeRemaining ? dl.timeRemaining() > 6 : performance.now() - t0 < 8));
-      if (i < jobs.length) idle(step); else done(out);
+      do { jobs[i++](); } while (i < jobs.length && (dl && dl.timeRemaining && !dl.didTimeout ? dl.timeRemaining() > 6 : performance.now() - t0 < 8));
+      if (i < jobs.length) idle(step, 200); else done(out);
     };
-    idle(step);
+    idle(step, 200);
   }
   function auditRest(ok) {
     const yr = TAKVIMLER[YEAR_KEY];
@@ -1744,7 +1745,7 @@ summary{min-height:44px;padding:11px 0;cursor:pointer}
     ok('Kaynak kimlikleri tanımlı', Object.values(CAMPUS).every((c) => SOURCES.some((s) => s.id === c.src)) && YEAR_KEYS.every((k) => SOURCES.some((s) => s.id === TAKVIMLER[k].src)));
   }
   let auditCache = null, auditRunning = false;
-  const idle = (f) => (window.requestIdleCallback ? window.requestIdleCallback(f, { timeout: 800 }) : setTimeout(f, 60));
+  const idle = (f, wait = 800) => (window.requestIdleCallback ? window.requestIdleCallback(f, { timeout: wait }) : setTimeout(f, 60));
   function renderHakkinda() {
     const t = Store.get('tema', 'system');
     $('#p-hakkinda').innerHTML =
