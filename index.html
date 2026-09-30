@@ -271,10 +271,13 @@ summary{min-height:44px;padding:11px 0;cursor:pointer}
   const $ = (s, r = document) => r.querySelector(s);
   const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
   const esc = (v) => String(v ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  // Depolama kapalıysa (site verisi engelli, data: adresi, dolu kota) değerler sayfa açık kaldıkça bellekte tutulur.
+  const STORAGE_OK = (() => { try { localStorage.setItem('mizan__', '1'); localStorage.removeItem('mizan__'); return true; } catch (e) { return false; } })();
+  const MEM = new Map();
   const Store = {
-    get(k, d) { try { const v = localStorage.getItem('mizan_' + k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
-    set(k, v) { try { localStorage.setItem('mizan_' + k, JSON.stringify(v)); } catch (e) { /* depolama kapalı */ } },
-    del(k) { try { localStorage.removeItem('mizan_' + k); } catch (e) { /* depolama kapalı */ } }
+    get(k, d) { try { const v = MEM.has(k) ? MEM.get(k) : localStorage.getItem('mizan_' + k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
+    set(k, v) { const s = JSON.stringify(v); try { localStorage.setItem('mizan_' + k, s); MEM.delete(k); } catch (e) { MEM.set(k, s); } },
+    del(k) { MEM.delete(k); try { localStorage.removeItem('mizan_' + k); } catch (e) { /* depolama kapalı */ } }
   };
   const asObject = (v) => (v && typeof v === 'object' && !Array.isArray(v) ? v : {});
   const asArray = (v) => (Array.isArray(v) ? v : []);
@@ -1093,6 +1096,7 @@ summary{min-height:44px;padding:11px 0;cursor:pointer}
       '<header class="stack"><h1>' + esc(head) + '</h1><div class="row between"><p class="muted">' + esc(fDate(TODAY, { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })) + (DEMO_DATE ? ' (deneme tarihi)' : '') + '</p>' +
         '<label class="row small muted" for="campusOzet">Kampüs <select id="campusOzet" data-campus style="width:auto"></select></label></div>' + (sub ? '<p class="muted">' + esc(sub) + '</p>' : '') + '</header>' +
       intro +
+      (STORAGE_OK ? '' : '<div class="note warn">Bu tarayıcıda site verisi kapalı; çalışmalar sayfa kapanınca silinir.</div>') +
       (ph.kind === 'stale' ? '<div class="note err">Bu sürümdeki takvim ' + esc(YEAR_KEY) + ' eğitim yılına ait. Güncel tarihler için ' + srcLink('takvim-sayfa', 'TOGÜ akademik takvim sayfası') + '.</div>' : '') +
       week +
       '<section class="stack"><div class="row between"><h2>Yaklaşan tarihler</h2><button type="button" class="linkbtn small" data-go="takvim">Takvim</button></div>' +
@@ -1757,8 +1761,9 @@ summary{min-height:44px;padding:11px 0;cursor:pointer}
     syncCampus($('#p-hakkinda'));
     const paint = () => { const list = $('#auditList'); if (list) list.innerHTML = auditCache.map((x) => '<li class="row between"><span>' + esc(x.t) + (x.extra ? '<br><span class="small muted">' + esc(x.extra) + '</span>' : '') + '</span><span class="tag ' + (x.pass ? 'ok' : 'warn') + '">' + (x.pass ? 'Geçti' : 'Sorun var') + '</span></li>').join(''); };
     if (auditCache) paint(); else if (!auditRunning) { auditRunning = true; runAudit((out) => { auditCache = out; auditRunning = false; paint(); }); }
-    const msg = sessionStorage.getItem('mizan_yedekMesaj');
-    if (msg) { $('#backupMsg').innerHTML = '<div class="note ok">' + esc(msg) + '</div>'; try { sessionStorage.removeItem('mizan_yedekMesaj'); } catch (e) { /* oturum deposu kapalı */ } }
+    let msg = null;
+    try { msg = sessionStorage.getItem('mizan_yedekMesaj'); sessionStorage.removeItem('mizan_yedekMesaj'); } catch (e) { /* oturum deposu kapalı */ }
+    if (msg) $('#backupMsg').innerHTML = '<div class="note ok">' + esc(msg) + '</div>';
   }
   const WIPE_KEYS = ['abc', 'abcIndex', 'pratik', 'pratikSekme', 'quiz', 'kartlar', 'deste', 'tekrarSekme', 'gno', 'checks'];
   const BACKUP_KEYS = WIPE_KEYS.concat(['campus', 'tema', 'tanitim']);
@@ -1771,7 +1776,7 @@ summary{min-height:44px;padding:11px 0;cursor:pointer}
   }
   function backup() {
     const veri = {};
-    BACKUP_KEYS.forEach((k) => { try { const v = localStorage.getItem('mizan_' + k); if (v != null) veri[k] = v; } catch (e) { /* depolama kapalı */ } });
+    BACKUP_KEYS.forEach((k) => { const v = Store.get(k, null); if (v != null) veri[k] = JSON.stringify(v); });
     const gun = new Date().toISOString().slice(0, 10);
     const blob = new Blob([JSON.stringify({ uygulama: 'Mizan', surum: VERSION, tarih: gun, veri }, null, 2)], { type: 'application/json' });
     const a = document.createElement('a');
@@ -1783,6 +1788,7 @@ summary{min-height:44px;padding:11px 0;cursor:pointer}
   function restore(file) {
     const out = (kind, m) => { $('#backupMsg').innerHTML = '<div class="note ' + kind + '">' + esc(m) + '</div>'; };
     if (!file) return;
+    if (!STORAGE_OK) { out('err', 'Bu tarayıcıda site verisi kapalı; yedek geri yüklenemez.'); return; }
     if (file.size > 1e6) { out('err', 'Dosya çok büyük; Mizan yedeği değil.'); return; }
     const r = new FileReader();
     r.onload = () => {

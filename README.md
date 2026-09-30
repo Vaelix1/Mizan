@@ -113,7 +113,7 @@ Kurulduktan sonra ana ekrandaki simgeden açılır ve internet olmadan çalış�
 
 Kayıtlar, test sonuçları, kartlar ve takvim işaretleri yalnızca o tarayıcıda (`localStorage`) saklanır; hiçbir sunucuya gönderilmez. Uygulamada çerez, analiz ya da reklam kodu yok.
 
-Tarayıcı verileri silinirse çalışma verileri de silinir. Telefon ya da tarayıcı değiştirirken **Ayarlar ve kaynaklar → Yedek** bölümünden `mizan-yedek-YYYY-AA-GG.json` dosyası alınır ve yeni cihazda **Yedekten geri yükle** ile açılır. Geri yükleme, o cihazdaki çalışma verilerinin yerine yedektekileri koyar; kampüs ve tema yedekte yoksa korunur.
+Tarayıcı verileri silinirse çalışma verileri de silinir. Site verisi engellenmiş bir tarayıcıda uygulama çalışır ama çalışmalar sayfa kapanınca kaybolur; Özet sayfası bunu belirtir. Telefon ya da tarayıcı değiştirirken **Ayarlar ve kaynaklar → Yedek** bölümünden `mizan-yedek-YYYY-AA-GG.json` dosyası alınır ve yeni cihazda **Yedekten geri yükle** ile açılır. Geri yükleme, o cihazdaki çalışma verilerinin yerine yedektekileri koyar; kampüs ve tema yedekte yoksa korunur.
 
 ## Mobilde akıcılık
 
@@ -163,7 +163,7 @@ Değişiklikten sonra üç denetim var.
 node tools/tarayici_testi.mjs
 ```
 
-Uygulamayı görünmez bir tarayıcıda uçtan uca dener; 24 test. Bütün sayfalar ve 15 konu; veri denetimi; 320–1440 px genişlikte yatay taşma ve mobilde dokunma hedefleri; ABC Ticaret'in arayüzden eksiksiz çözümü; hatalı kayıt mesajları; satır ekleme ve silme; 40 rastgele serbest alıştırma; puanlama; test ve kartlar; hesap araçlarının bilinen değerleri; takvim işaretleri; tema ve koyu modda okunabilirlik; kampüs değişimi; geri tuşu ve derin bağlantılar; yedek alma ve geri yükleme; bozuk kayıtlarla açılış; sıfırlama; 16 deneme tarihinde dönem tespiti; yavaş işlemcide akıcılık; dosyadan açma; sunucu kapalıyken çevrimdışı açılış. Çıkış kodu 0 ise hepsi geçmiştir.
+Uygulamayı görünmez bir tarayıcıda uçtan uca dener; 25 test. Bütün sayfalar ve 15 konu; veri denetimi; 320–1440 px genişlikte yatay taşma ve mobilde dokunma hedefleri; ABC Ticaret'in arayüzden eksiksiz çözümü; hatalı kayıt mesajları; satır ekleme ve silme; 40 rastgele serbest alıştırma; puanlama; test ve kartlar; hesap araçlarının bilinen değerleri; takvim işaretleri; tema ve koyu modda okunabilirlik; kampüs değişimi; geri tuşu ve derin bağlantılar; yedek alma ve geri yükleme; bozuk kayıtlarla açılış; site verisi kapalı bir tarayıcıda çalışma; sıfırlama; 16 deneme tarihinde dönem tespiti; yavaş işlemcide akıcılık; dosyadan açma; sunucu kapalıyken çevrimdışı açılış. Çıkış kodu 0 ise hepsi geçmiştir.
 
 `--ekran docs/ekran` testlerden sonra README ekran görüntülerini yeniden yazar; `--yalniz <metin>` yalnızca adında o metin geçen testleri çalıştırır.
 

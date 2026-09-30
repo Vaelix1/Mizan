@@ -592,6 +592,45 @@ test('Bozuk kayıtlarla açılış hata vermiyor', async () => {
   return 'kampüs ' + r.kampus;
 });
 
+test('Depolama kapalıyken sekmeler, tanıtım, tema ve ayarlar çalışıyor', async () => {
+  // Site verisi engelli tarayıcı ya da data: adresi: localStorage ve sessionStorage erişimi hata verir.
+  const { identifier } = await S.gonder('Page.addScriptToEvaluateOnNewDocument', { source: "['localStorage','sessionStorage'].forEach(function(k){Object.defineProperty(window,k,{configurable:true,get:function(){throw new DOMException('Depolama kapalı','SecurityError');}});});" });
+  try {
+    hatalariAl();
+    await yenile(S, 'ozet');
+    const r = await js(S, async () => {
+      const o = {};
+      o.not = __t.$('#p-ozet').innerText.includes('site verisi kapalı');
+      o.tanitim = !!__t.$('#introBox');
+      __t.$('[data-intro-close]').click(); await __t.git('notlar'); await __t.git('ozet');
+      o.tanitimKapali = !__t.$('#introBox');
+      await __t.git('tekrar');
+      __t.$('#tab-kart').click(); await __t.bekle(10);
+      o.kart = __t.$('#tab-kart').getAttribute('aria-selected') === 'true' && !!__t.$('#deckSel');
+      __t.$('#tab-test').click(); await __t.bekle(10);
+      o.test = __t.$('#tab-test').getAttribute('aria-selected') === 'true' && !!__t.$('[data-test-start]');
+      await __t.git('alistirma');
+      __t.$('[data-tab="serbest"]').click(); await __t.bekle(10);
+      o.serbest = __t.$('[data-tab="serbest"]').getAttribute('aria-selected') === 'true';
+      __t.$('[data-tab="abc"]').click(); await __t.bekle(10);
+      const once = document.documentElement.getAttribute('data-theme');
+      __t.$('.topbar [data-theme-toggle]').click();
+      o.tema = document.documentElement.getAttribute('data-theme') !== once;
+      await __t.git('hakkinda');
+      o.ayarlar = __t.$('#p-hakkinda h1')?.textContent === 'Ayarlar ve kaynaklar' && __t.$('#themeSel').value === document.documentElement.getAttribute('data-theme');
+      __t.$('.topbar [data-theme-toggle]').click();
+      return o;
+    });
+    const h = hatalariAl();
+    dogrula(!h.length, 'Konsol:\n' + h.join('\n'));
+    dogrula(Object.values(r).every(Boolean), 'Depolama kapalı: ' + JSON.stringify(r));
+    return 'sekmeler, tanıtım, tema, ayarlar';
+  } finally {
+    await S.gonder('Page.removeScriptToEvaluateOnNewDocument', { identifier });
+    await yenile(S, 'ozet');
+  }
+});
+
 test('Sıfırlama çalışma verilerini siliyor, kampüs ve temayı koruyor', async () => {
   await js(S, () => { localStorage.setItem('mizan_abc', '{"0":true}'); localStorage.setItem('mizan_campus', '"niksar"'); localStorage.setItem('mizan_tema', '"dark"'); });
   await yenile(S, 'hakkinda');
