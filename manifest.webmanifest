@@ -1,4 +1,5 @@
 {
+  "id": "./",
   "name": "Mizan",
   "short_name": "Mizan",
   "description": "TOGÜ Muhasebe ve Vergi Uygulamaları öğrencileri için ilk dönem kiti: konu notları, hesap planı, yevmiye alıştırmaları, tekrar, hesap araçları ve akademik takvim.",
@@ -7,6 +8,7 @@
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
+  "categories": ["education"],
   "background_color": "#F4F5F2",
   "theme_color": "#11694E",
   "icons": [

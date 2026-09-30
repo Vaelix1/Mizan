@@ -1,6 +1,6 @@
 // Mizan service worker: uygulamayı çevrimdışı çalışır tutar.
 // Sürüm değişince CACHE adını da değiştir; eski önbellek silinir.
-const CACHE = 'mizan-1.0.0';
+const CACHE = 'mizan-1.1.0';
 const CORE = ['./', './index.html', './manifest.webmanifest', './icons/icon-192.png', './icons/icon-512.png', './icons/icon-maskable-512.png', './icons/apple-touch-icon.png'];
 
 self.addEventListener('install', (e) => {

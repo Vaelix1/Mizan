@@ -5,15 +5,19 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Mizan</title>
 <meta name="description" content="Mizan — TOGÜ Muhasebe ve Vergi Uygulamaları öğrencileri için ilk dönem kiti: Genel Muhasebe I notları, hesap planı, yevmiye alıştırmaları, soru tekrarı, hesap araçları ve akademik takvim.">
-<meta name="theme-color" content="#11694E">
+<meta name="theme-color" content="#F4F5F2">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Mizan">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%2311694E'/%3E%3Cpath d='M7 10h18M16 10v14' stroke='white' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E">
-<link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
-<script>try{var t=JSON.parse(localStorage.getItem('mizan_tema')||'null');if(t==='dark'||t==='light')document.documentElement.setAttribute('data-theme',t);}catch(e){}</script>
+<script>try{var t=JSON.parse(localStorage.getItem('mizan_tema')||'null');if(t==='dark'||t==='light')document.documentElement.setAttribute('data-theme',t);}catch(e){}
+if(/^https?:$/.test(location.protocol)){var m=document.createElement('link');m.rel='manifest';m.href='manifest.webmanifest';document.head.appendChild(m);}</script>
 <style>
 [hidden]{display:none!important}
 :root{
-  --bg:#F4F5F2;--surface:#FFFFFF;--surface-2:#ECEEEA;--ink:#15191A;--ink-2:#4B5553;--ink-3:#6C7673;
+  --bg:#F4F5F2;--surface:#FFFFFF;--surface-2:#ECEEEA;--ink:#15191A;--ink-2:#4B5553;--ink-3:#5F6966;
   --line:#DADFDC;--line-2:#BEC6C2;--accent:#11694E;--accent-ink:#FFFFFF;--accent-soft:#DFF0E8;
   --debit:#1D4F91;--debit-soft:#E3EBF7;--credit:#A33526;--credit-soft:#F8E5E1;
   --warn:#6B4A00;--warn-soft:#FAEFD4;--ok:#15613F;--ok-soft:#DDEFE5;--err:#A33526;--err-soft:#F8E5E1;
@@ -37,8 +41,9 @@
   color-scheme:dark;
 }
 *{box-sizing:border-box}
-html{-webkit-text-size-adjust:100%}
-body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 var(--sans)}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 var(--sans);-webkit-tap-highlight-color:transparent}
+button,select,input,label,summary,a{touch-action:manipulation}
 a{color:var(--accent)}
 :focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 h1,h2,h3,h4{margin:0;line-height:1.3;font-weight:650;text-wrap:balance}
@@ -55,6 +60,7 @@ table{border-collapse:collapse}
 .row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
 .between{justify-content:space-between}
 .skip{position:absolute;left:-999px;top:0}
+.sr{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
 .skip:focus{left:8px;top:8px;z-index:50;background:var(--surface);padding:8px 12px;border-radius:8px}
 
 /* ---------- 1. İSKELET ---------- */
@@ -66,6 +72,11 @@ table{border-collapse:collapse}
 .topbar strong{font-size:1.05rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 main{padding:20px 16px calc(var(--nav-h) + 32px + env(safe-area-inset-bottom,0px));max-width:860px;margin:0 auto;outline:none}
 .page{display:flex;flex-direction:column;gap:24px}
+/* Gizli sayfalar çizim durumunu korur; geri dönüldüğünde yeniden yerleşim gerekmez. */
+@supports (content-visibility:hidden){
+  .page[hidden]{display:flex!important;content-visibility:hidden;contain-intrinsic-size:0;height:0;overflow:hidden}
+  .page[hidden].isin{content-visibility:visible;height:auto;overflow:visible;visibility:hidden}
+}
 .bottom{position:fixed;left:0;right:0;bottom:0;z-index:30;display:grid;grid-template-columns:repeat(5,1fr);
   background:var(--surface);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px)}
 .bottom button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;height:var(--nav-h);
@@ -89,7 +100,7 @@ svg.i{fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke
 .logo::after{content:"";position:absolute;left:13.5px;top:9px;bottom:6px;width:3px;border-radius:2px;background:var(--accent-ink)}
 #sideNav{display:flex;flex-direction:column;gap:2px}
 #sideNav button{text-align:left;border:0;background:none;color:var(--ink-2);font:inherit;font-size:.95rem;padding:9px 10px;border-radius:8px;cursor:pointer}
-#sideNav button:hover{background:var(--surface-2)}
+@media (hover:hover){#sideNav button:hover{background:var(--surface-2)}}
 #sideNav button[aria-current="page"]{background:var(--accent-soft);color:var(--accent);font-weight:600}
 #sideNav hr{border:0;border-top:1px solid var(--line);margin:8px 4px}
 .side-foot{margin-top:auto;display:flex;flex-direction:column;gap:8px;padding:0 4px;font-size:.85rem;color:var(--ink-2)}
@@ -99,16 +110,18 @@ select,input,button,textarea{font:inherit;color:inherit}
 select,input[type=text],input[type=number],input[type=search]{width:100%;max-width:100%;min-height:44px;padding:8px 10px;border:1px solid var(--line-2);border-radius:8px;background:var(--surface);font-size:16px}
 label.f{display:flex;flex-direction:column;gap:5px;font-size:.875rem;color:var(--ink-2)}
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:44px;padding:8px 16px;border:1px solid var(--line-2);border-radius:8px;background:var(--surface);cursor:pointer;font-weight:500;text-decoration:none;color:var(--ink)}
-.btn:hover{border-color:var(--ink-3)}
+@media (hover:hover){.btn:hover{border-color:var(--ink-3)}}
+.btn:active{background:var(--surface-2)}
 .btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn.primary:active{filter:brightness(.92)}
 .btn.ghost{border-color:transparent;background:transparent;color:var(--ink-2)}
-.btn.small{min-height:36px;padding:5px 12px;font-size:.875rem}
+.btn.small{min-height:40px;padding:6px 12px;font-size:.875rem}
 .btn:disabled{opacity:.5;cursor:default}
 .seg{display:inline-grid;grid-auto-flow:column;border:1px solid var(--line-2);border-radius:8px;overflow:hidden}
 .seg button{min-height:44px;min-width:64px;border:0;background:var(--surface);cursor:pointer;padding:0 12px;font-weight:500}
 .seg button+button{border-left:1px solid var(--line-2)}
-.seg button[aria-pressed="true"].b{background:var(--debit);color:#fff}
-.seg button[aria-pressed="true"].a{background:var(--credit);color:#fff}
+.seg button[aria-pressed="true"].b{background:var(--debit);color:var(--surface)}
+.seg button[aria-pressed="true"].a{background:var(--credit);color:var(--surface)}
 .seg button[aria-pressed="true"].n{background:var(--accent);color:var(--accent-ink)}
 .form{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(min(100%,170px),1fr))}
 .err-text{font-size:.8rem;color:var(--err);min-height:1.1em}
@@ -118,7 +131,8 @@ label.f{display:flex;flex-direction:column;gap:5px;font-size:.875rem;color:var(-
 .list{list-style:none;padding:0;margin:0}
 .list>li{margin:0;padding:12px 0;border-bottom:1px solid var(--line)}
 .list>li:last-child{border-bottom:0}
-.list button.link,.linkbtn{background:none;border:0;padding:0;color:var(--accent);font:inherit;cursor:pointer;text-align:left}
+.linkbtn{display:inline-flex;align-items:center;min-height:40px;background:none;border:0;padding:0;color:var(--accent);font:inherit;cursor:pointer;text-align:left}
+.linkbtn.small{font-size:.875rem}
 .note{border-radius:var(--r);padding:12px 14px;font-size:.93rem}
 .note.info{background:var(--surface-2);color:var(--ink-2)}
 .note.ok{background:var(--ok-soft);color:var(--ok)}
@@ -179,14 +193,21 @@ table.jr tr.x td{font-style:italic;color:var(--ink-3);font-size:.85rem;border-bo
   .erow .seg{display:grid;grid-template-columns:1fr 1fr}
 }
 .steps{display:flex;flex-wrap:wrap;gap:6px}
-.steps button{min-height:36px;min-width:44px;padding:4px 10px;border:1px solid var(--line-2);border-radius:8px;background:var(--surface);cursor:pointer;font:500 .85rem var(--mono)}
+.steps button{min-height:44px;min-width:56px;padding:4px 10px;border:1px solid var(--line-2);border-radius:8px;background:var(--surface);cursor:pointer;font:500 .85rem var(--mono)}
 .steps button[aria-current="step"]{border-color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink)}
 .steps button.done{background:var(--ok-soft);color:var(--ok);border-color:transparent}
-.acct{padding:12px 0;border-bottom:1px solid var(--line)}
-.acct summary{display:flex;gap:12px;align-items:baseline;cursor:pointer;list-style:none}
+.acct{border-bottom:1px solid var(--line)}
+.acct summary{display:flex;gap:12px;align-items:center;min-height:50px;padding:4px 0;cursor:pointer;list-style:none}
+.gl{padding:12px 0;border-bottom:1px solid var(--line)}
+.gl dt{font-weight:650}.gl dd{margin:4px 0 0;color:var(--ink-2)}
+.chk{display:flex;align-items:center;gap:10px;min-height:44px;margin-top:4px;font-size:.875rem;cursor:pointer}
+.chk input{width:22px;height:22px;margin:0;accent-color:var(--accent)}
+.file-in{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
 .acct summary::-webkit-details-marker{display:none}
+.acct summary:focus-visible{outline-offset:-2px}
 .acct .code{font:600 1.05rem var(--mono);min-width:2.6rem}
-.acct .body{padding:8px 0 4px 3.6rem;display:flex;flex-direction:column;gap:8px;font-size:.92rem;color:var(--ink-2)}
+summary{min-height:44px;padding:11px 0;cursor:pointer}
+.acct .body{padding:2px 0 14px 3.6rem;display:flex;flex-direction:column;gap:8px;font-size:.92rem;color:var(--ink-2)}
 .opts{display:flex;flex-direction:column;gap:8px}
 .opts button{text-align:left;min-height:48px;padding:10px 14px;border:1px solid var(--line-2);border-radius:8px;background:var(--surface);cursor:pointer;font:inherit;color:var(--ink)}
 .opts button.right{background:var(--ok-soft);border-color:var(--ok);color:var(--ok)}
@@ -210,7 +231,8 @@ table.jr tr.x td{font-style:italic;color:var(--ink-3);font-size:.85rem;border-bo
 </style>
 </head>
 <body>
-<a class="skip" href="#main">İçeriğe geç</a>
+<a class="skip" href="#main" data-skip>İçeriğe geç</a>
+<noscript><p style="padding:16px">Mizan'ın çalışması için tarayıcıda JavaScript açık olmalı.</p></noscript>
 <div class="app">
   <aside class="side" aria-label="Bölümler">
     <div class="brand"><span class="logo" aria-hidden="true"></span><div><strong>Mizan</strong><small>Muhasebe ve Vergi Uygulamaları · TOGÜ</small></div></div>
@@ -234,6 +256,7 @@ table.jr tr.x td{font-style:italic;color:var(--ink-3);font-size:.85rem;border-bo
       <section class="page" id="p-takvim" hidden></section>
       <section class="page" id="p-dersler" hidden></section>
       <section class="page" id="p-diger" hidden></section>
+      <section class="page" id="p-nasil" hidden></section>
       <section class="page" id="p-hakkinda" hidden></section>
     </main>
   </div>
@@ -262,13 +285,16 @@ table.jr tr.x td{font-style:italic;color:var(--ink-3);font-size:.85rem;border-bo
   let TODAY = todayDate();
   const addDays = (d, n) => new Date(d.getFullYear(), d.getMonth(), d.getDate() + n);
   const days = (a, b) => Math.round((b - a) / DAY);
-  const fDate = (d, o) => d.toLocaleDateString('tr-TR', o || { day: 'numeric', month: 'long' });
+  // Intl biçimlendiricileri bir kez kurulur; her çağrıda yenisini kurmak mobilde takılmaya yol açar.
+  const DTF = new Map();
+  const fDate = (d, o) => { const k = JSON.stringify(o || 0); if (!DTF.has(k)) DTF.set(k, new Intl.DateTimeFormat('tr-TR', o || { day: 'numeric', month: 'long' })); return DTF.get(k).format(d); };
   const fRange = (a, b) => {
     if (!b || +a === +b) return fDate(a, { day: 'numeric', month: 'short', year: 'numeric' });
     if (a.getMonth() === b.getMonth() && a.getFullYear() === b.getFullYear()) return a.getDate() + '–' + fDate(b, { day: 'numeric', month: 'short', year: 'numeric' });
     return fDate(a, { day: 'numeric', month: 'short' }) + ' – ' + fDate(b, { day: 'numeric', month: 'short', year: 'numeric' });
   };
-  const money = (n, dec = 2) => Number(n).toLocaleString('tr-TR', { minimumFractionDigits: dec, maximumFractionDigits: 2 });
+  const NF = new Map();
+  const money = (n, dec = 2) => { if (!NF.has(dec)) NF.set(dec, new Intl.NumberFormat('tr-TR', { minimumFractionDigits: dec, maximumFractionDigits: 2 })); return NF.get(dec).format(Number(n)); };
   const tl = (n) => money(n, 0) + ' TL';
   const parseAmount = (raw) => {
     let s = String(raw ?? '').replace(/\s|TL|₺/gi, '');
@@ -632,7 +658,7 @@ table.jr tr.x td{font-style:italic;color:var(--ink-3);font-size:.85rem;border-bo
     stok: { t: 'Stoklar ve KDV', b: [
       { p: 'Stoklar (15), satmak ya da üretimde kullanmak için elde tutulan varlıklardır. Ticaret işletmesinde en önemlisi 153 Ticari Mallar\'dır: aynen satılmak için alınan mallar. Aynı bilgisayar, bir bilgisayar mağazası için 153 Ticari Mallar, bir muhasebe bürosu için 255 Demirbaşlar\'dır.' },
       { h: 'KDV' },
-      { p: 'Alışta ödenen KDV 191 İndirilecek KDV\'ye borç, satışta hesaplanan KDV 391 Hesaplanan KDV\'ye alacak yazılır. 600 Yurt İçi Satışlar\'a her zaman KDV hariç tutar yazılır. Genel oran %20, indirimli oranlar %10 ve %1\'dir (10 Temmuz 2023\'ten beri; 7346 sayılı Cumhurbaşkanı Kararı).' },
+      { p: 'Alışta ödenen KDV 191 İndirilecek KDV\'ye borç, satışta hesaplanan KDV 391 Hesaplanan KDV\'ye alacak yazılır. 600 Yurt İçi Satışlar\'a her zaman KDV hariç tutar yazılır. Genel oran 10 Temmuz 2023\'ten beri %20\'dir (7346 sayılı Cumhurbaşkanı Kararı); indirimli oranlar %10 ve %1.' },
       { f: '%20 oranında:\nKDV hariç → dahil: tutar × 1,20\nKDV dahil → hariç: tutar ÷ 1,20' },
       { p: 'Sık yapılan hata: KDV dahil 18.000 TL\'nin matrahını 18.000 × 0,80 = 14.400 TL bulmak. Doğrusu 18.000 ÷ 1,20 = 15.000 TL.' },
       { h: 'Envanter yöntemleri' },
@@ -670,7 +696,7 @@ table.jr tr.x td{font-style:italic;color:var(--ink-3);font-size:.85rem;border-bo
     duran2: { t: 'Maddi ve maddi olmayan duran varlıklar, amortisman', b: [
       { p: 'Maddi duran varlıklar (25) işletmede bir yıldan uzun kullanılan fiziki varlıklardır: arsa, bina, makine, taşıt, demirbaş. Maddi olmayanlar (26) marka, patent, lisans gibi haklardır. Varlık maliyet bedeliyle kaydedilir: alış bedeli ile kullanıma hazır hâle getirene kadar yapılan taşıma, kurulum gibi giderler.' },
       { h: 'Amortisman' },
-      { p: 'Amortisman, kullanıldıkça değeri azalan varlıkların maliyetinin faydalı ömre dağıtılmasıdır. Arazi ve arsalar amortismana tabi değildir. Faydalı ömürler ve oranlar Maliye Bakanlığınca ilan edilir (VUK 315).' },
+      { p: 'Amortisman, kullanıldıkça değeri azalan varlıkların maliyetinin faydalı ömre dağıtılmasıdır. Arazi ve arsalar amortismana tabi değildir. Faydalı ömürler ve oranlar Hazine ve Maliye Bakanlığınca ilan edilir (VUK 315).' },
       { f: 'Normal amortisman: yıllık tutar = maliyet ÷ faydalı ömür\nAzalan bakiyeler: oran = normal oran × 2 (en fazla %50), her yıl kalan değere uygulanır' },
       { p: 'Azalan bakiyeler yöntemini yalnızca bilanço esasına göre defter tutanlar seçebilir; faydalı ömrün son yılında kalan değerin tamamı ayrılır (VUK mük. 315).' },
       { ex: { q: 'Büro için 60.000 TL + %20 KDV\'lik demirbaş alındı, bedel bankadan ödendi.', sol: [['255', 'B', 60000], ['191', 'B', 12000], ['102', 'A', 72000]] } },
@@ -707,7 +733,7 @@ table.jr tr.x td{font-style:italic;color:var(--ink-3);font-size:.85rem;border-bo
       { p: 'Şirket kuruluşunda ortakların koymayı taahhüt ettiği sermayenin tamamı 500 Sermaye\'ye alacak, henüz ödenmeyen kısmı 501 Ödenmemiş Sermaye\'ye borç yazılır. Ortaklar ödedikçe 501 alacaklanır.' },
       { ex: { q: 'Şirket 500.000 TL sermaye taahhüdüyle kuruldu.', sol: [['501', 'B', 500000], ['500', 'A', 500000]] } },
       { ex: { q: 'Ortaklar 300.000 TL\'sini bankaya yatırdı.', sol: [['102', 'B', 300000], ['501', 'A', 300000]] } },
-      { p: 'Dönem sonunda gelir tablosu hesapları kapatılır; net kâr 590\'a, net zarar 591\'e aktarılır. Kârdan kanuni yedek (540) ayrılabilir. Bu işlemler ayrıntılı olarak Genel Muhasebe II\'de işlenir.' }
+      { p: 'Dönem sonunda gelir tablosu hesapları kapatılır; net kâr 590\'a, net zarar 591\'e aktarılır. Kârdan kanuni yedek akçe ayrılır (540 Yasal Yedekler). Bu işlemler ayrıntılı olarak Genel Muhasebe II\'de işlenir.' }
     ] },
     gelirgider: { t: 'Gelir ve gider hesapları', b: [
       { p: '6 sınıfı gelir tablosunu oluşturur. Gelir hesapları alacak, gider hesapları borç tarafında çalışır. Satışlar 60, satış indirimleri 61, satılan malın maliyeti 62, faaliyet giderleri 63, diğer olağan gelir ve kârlar 64, diğer olağan gider ve zararlar 65, finansman giderleri 66 grubunda toplanır.' },
@@ -769,14 +795,14 @@ table.jr tr.x td{font-style:italic;color:var(--ink-3);font-size:.85rem;border-bo
     ['Vade', 'Bir borcun ödenmesi gereken tarih.'],
     ['İskonto', 'Senedin vadesinden önce bankaya verilip faizi düşülerek paraya çevrilmesi; satışta ise fiyattan yapılan indirim.'],
     ['Amortisman', 'Kullanıldıkça değeri azalan duran varlıkların maliyetinin faydalı ömre dağıtılması.'],
-    ['Faydalı ömür', 'Bir duran varlığın işletmede kullanılması beklenen süre; oranlar Maliye Bakanlığınca ilan edilir.'],
+    ['Faydalı ömür', 'Bir duran varlığın işletmede kullanılması beklenen süre; oranlar Hazine ve Maliye Bakanlığınca ilan edilir.'],
     ['Maliyet bedeli', 'Bir varlığı elde etmek ve kullanıma hazır hâle getirmek için katlanılan toplam tutar.'],
     ['Aralıklı envanter', 'Satılan malın maliyetinin dönem sonunda sayımla hesaplandığı yöntem.'],
     ['Sürekli envanter', 'Her satışta satılan malın maliyetinin de kaydedildiği yöntem.'],
     ['Satılan malın maliyeti', 'Dönem başı stok + dönem içi alışlar − dönem sonu stok.'],
     ['Düzenleyici hesap', 'Bağlı olduğu hesabın değerini düzelten, ters tarafta çalışan hesap; adında (-) bulunur.'],
     ['Nazım hesap', 'Bilançoyu etkilemeyen, bilgi amaçlı izlenen hesaplar (9 sınıfı).'],
-    ['Tek düzen hesap planı', '1994\'ten beri uygulanan, bütün işletmelerin aynı kodları kullandığı hesap planı.'],
+    ['Tek düzen hesap planı', '1994\'ten beri uygulanan, bilanço esasına göre defter tutan işletmelerin aynı kodları kullandığı hesap planı.'],
     ['7/A seçeneği', 'Giderlerin dönem içinde işlevlerine göre 7 sınıfında izlendiği, dönem sonunda 6 sınıfına aktarıldığı yöntem.'],
     ['Avans', 'Bir mal ya da hizmet karşılığında önceden verilen ya da alınan para.'],
     ['Karşılık', 'Olası bir gider ya da zarar için önceden ayrılan tutar (ihtiyatlılık kavramı).'],
@@ -821,7 +847,7 @@ table.jr tr.x td{font-style:italic;color:var(--ink-3);font-size:.85rem;border-bo
     { q: 'Ay sonunda 191 bakiyesi 391 bakiyesinden büyükse fark hangi hesaba yazılır?', a: '190 Devreden KDV', w: ['360 Ödenecek Vergi ve Fonlar', '391 Hesaplanan KDV', '102 Bankalar'], x: 'Fazla indirilecek KDV sonraki aya devreder.' },
     { q: 'Aralıklı envanter yönteminde satılan malın maliyeti ne zaman hesaplanır?', a: 'Dönem sonunda', w: ['Her satışta', 'Her alışta', 'Hiç hesaplanmaz'], x: 'Sürekli envanterde her satışta hesaplanır.' },
     { q: 'Satılan malın maliyeti nasıl bulunur?', a: 'Dönem başı stok + alışlar − dönem sonu stok', w: ['Satışlar − alışlar', 'Dönem sonu stok + alışlar − dönem başı stok', 'Satışlar × KDV oranı'], x: 'Aralıklı envanter formülü.' },
-    { q: 'Bir muhasebe bürosunun kendi kullanımı için aldığı bilgisayar hangi hesaba yazılır?', a: '255 Demirbaşlar', w: ['153 Ticari Mallar', '770 Genel Yönetim Giderleri', '260 Haklar'], x: 'Satmak için değil, kullanmak için alınmıştır.' },
+    { q: 'Bir muhasebe bürosunun kendi kullanımı için aldığı bilgisayar hangi hesaba yazılır?', a: '255 Demirbaşlar', w: ['153 Ticari Mallar', '621 Satılan Ticari Mallar Maliyeti (-)', '260 Haklar'], x: 'Satmak için değil, kullanmak için alınmıştır.' },
     { q: 'Bir bilgisayar mağazasının satmak için aldığı bilgisayarlar hangi hesaba yazılır?', a: '153 Ticari Mallar', w: ['255 Demirbaşlar', '150 İlk Madde ve Malzeme', '254 Taşıtlar'], x: 'Aynen satılmak için alınan mallar ticari maldır.' },
     { q: 'Hangisi amortismana tabi değildir?', a: 'Arsa', w: ['Bina', 'Taşıt', 'Demirbaş'], x: 'Arazi ve arsalar amortisman ayrılmaz.' },
     { q: 'Azalan bakiyeler yönteminde amortisman oranı nedir?', a: 'Normal oranın iki katı, en fazla %50', w: ['Normal oranın yarısı', 'Her yıl %50', 'Normal oranla aynı'], x: 'VUK mük. 315.' },
@@ -950,10 +976,12 @@ table.jr tr.x td{font-style:italic;color:var(--ink-3);font-size:.85rem;border-bo
     { id: 'araclar', t: 'Hesap araçları', d: 'Final notu, ortalama, KDV, faiz, kâr, amortisman' },
     { id: 'takvim', t: 'Takvim', d: 'Akademik takvim ve kontrol listesi' },
     { id: 'dersler', t: 'Dersler', d: 'Birinci yarıyıl ders planı' },
-    { id: 'hakkinda', t: 'Ayarlar ve kaynaklar', d: 'Kampüs, tema, kaynaklar' }
+    { id: 'nasil', t: 'Nasıl kullanılır', d: 'Uygulamanın tanıtımı' },
+    { id: 'hakkinda', t: 'Ayarlar ve kaynaklar', d: 'Kampüs, tema, yedek, kaynaklar' }
   ];
-  const PAGES = ['ozet', 'notlar', 'konu', 'alistirma', 'tekrar', 'hesaplar', 'sozluk', 'araclar', 'takvim', 'dersler', 'diger', 'hakkinda'];
-  const PARENT = { konu: 'notlar', hesaplar: 'diger', sozluk: 'diger', araclar: 'diger', takvim: 'diger', dersler: 'diger', hakkinda: 'diger' };
+  const PAGES = ['ozet', 'notlar', 'konu', 'alistirma', 'tekrar', 'hesaplar', 'sozluk', 'araclar', 'takvim', 'dersler', 'diger', 'nasil', 'hakkinda'];
+  const PARENT = { konu: 'notlar', hesaplar: 'diger', sozluk: 'diger', araclar: 'diger', takvim: 'diger', dersler: 'diger', nasil: 'diger', hakkinda: 'diger' };
+  const VERSION = '1.1.0';
 
   /* ---------- 12. DURUM ---------- */
   let campusKey = Store.get('campus', 'tokat');
@@ -965,7 +993,7 @@ table.jr tr.x td{font-style:italic;color:var(--ink-3);font-size:.85rem;border-bo
   let checks = asObject(Store.get('checks', {}));
   let practice = asObject(Store.get('pratik', {}));
   if (!Number.isFinite(practice.dogru) || !Number.isFinite(practice.toplam)) practice = { dogru: 0, toplam: 0 };
-  let quizHist = asArray(Store.get('quiz', [])).filter((h) => h && Number.isFinite(h.d) && Number.isFinite(h.n));
+  let quizHist = asArray(Store.get('quiz', [])).filter((h) => h && Number.isFinite(h.t) && Number.isFinite(h.d) && Number.isFinite(h.n));
   let boxes = asObject(Store.get('kartlar', {}));
   const checkKey = (id) => YEAR_KEY + ':' + id;
   const weeksOfTopic = (id) => camp().weeks.map((w, i) => (w.k.includes(id) ? i + 1 : 0)).filter(Boolean);
@@ -1001,7 +1029,8 @@ table.jr tr.x td{font-style:italic;color:var(--ink-3);font-size:.85rem;border-bo
   function go(page, arg, push = true) {
     if (page === 'konu' && !TOPICS[arg]) page = 'notlar';
     current = page; currentArg = page === 'konu' ? arg : null;
-    if (page === 'konu') renderKonu(arg);
+    if (page === 'nasil') Store.set('tanitim', 1);
+    if (page === 'konu') renderKonu(arg); else ensure(page);
     PAGES.forEach((p) => { $('#p-' + p).hidden = p !== page; });
     const navId = PARENT[page] === 'notlar' ? 'notlar' : page;
     $$('#sideNav button').forEach((b) => b.setAttribute('aria-current', b.dataset.go === navId ? 'page' : 'false'));
@@ -1017,7 +1046,11 @@ table.jr tr.x td{font-style:italic;color:var(--ink-3);font-size:.85rem;border-bo
     $('#sideNav').innerHTML = NAV.map((n) => (n.sep ? '<hr>' : '<button type="button" data-go="' + n.id + '">' + esc(n.t) + '</button>')).join('');
     $('#bottomNav').innerHTML = NAV.filter((n) => n.icon).map((n) => '<button type="button" data-go="' + n.id + '">' + icon(n.icon) + '<span>' + esc(n.s || n.t) + '</span></button>').join('') +
       '<button type="button" data-go="diger">' + icon('diger') + '<span>Diğer</span></button>';
-    $$('[data-campus]').forEach((s) => { s.innerHTML = Object.entries(CAMPUS).map(([k, c]) => '<option value="' + k + '">' + esc(c.label) + '</option>').join(''); s.value = campusKey; });
+    syncCampus();
+  }
+  const CAMPUS_OPTIONS = Object.entries(CAMPUS).map(([k, c]) => '<option value="' + k + '">' + esc(c.label) + '</option>').join('');
+  function syncCampus(root = document) {
+    $$('[data-campus]', root).forEach((s) => { if (!s.options.length) s.innerHTML = CAMPUS_OPTIONS; s.value = campusKey; });
   }
 
   /* ---------- 15. ÖZET ---------- */
@@ -1050,11 +1083,16 @@ table.jr tr.x td{font-style:italic;color:var(--ink-3);font-size:.85rem;border-bo
         (next ? '<p class="small muted">Sonraki hafta: ' + esc(next.t) + '</p>' : '') + '</div></section>';
     }
     const abcN = ABC.filter((_, i) => abcDone[i]).length;
-    const known = Object.values(boxes).filter((b) => b >= 4).length;
+    const allCards = Object.values(DECKS).reduce((p, d) => p + d.cards.length, 0);
+    const known = Object.values(DECKS).reduce((p, d) => p + d.cards.filter((cd) => boxOf(cd.id) >= 4).length, 0);
     const last = quizHist[quizHist.length - 1];
+    const intro = Store.get('tanitim', 0) ? '' :
+      '<section class="box stack" id="introBox"><h2>Mizan\'a başlarken</h2><p>Genel Muhasebe I ve ilk dönemin diğer dersleri için konu notları, yevmiye alıştırmaları, tekrar ve hesap araçları. Önce kampüsünü seç; haftalık plan ve ders kodları buna göre değişir. Bütün veriler bu cihazda kalır.</p>' +
+      '<div class="row"><button type="button" class="btn primary" data-go="nasil">Nasıl kullanılır</button><button type="button" class="btn ghost" data-intro-close>Kapat</button></div></section>';
     $('#p-ozet').innerHTML =
       '<header class="stack"><h1>' + esc(head) + '</h1><div class="row between"><p class="muted">' + esc(fDate(TODAY, { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })) + (DEMO_DATE ? ' (deneme tarihi)' : '') + '</p>' +
         '<label class="row small muted" for="campusOzet">Kampüs <select id="campusOzet" data-campus style="width:auto"></select></label></div>' + (sub ? '<p class="muted">' + esc(sub) + '</p>' : '') + '</header>' +
+      intro +
       (ph.kind === 'stale' ? '<div class="note err">Bu sürümdeki takvim ' + esc(YEAR_KEY) + ' eğitim yılına ait. Güncel tarihler için ' + srcLink('takvim-sayfa', 'TOGÜ akademik takvim sayfası') + '.</div>' : '') +
       week +
       '<section class="stack"><div class="row between"><h2>Yaklaşan tarihler</h2><button type="button" class="linkbtn small" data-go="takvim">Takvim</button></div>' +
@@ -1063,10 +1101,10 @@ table.jr tr.x td{font-style:italic;color:var(--ink-3);font-size:.85rem;border-bo
       '<section class="stack"><h2>Çalışma durumu</h2><div class="stats">' +
         '<div class="stat"><b>' + abcN + '/' + ABC.length + '</b><span>ABC Ticaret kayıtları</span></div>' +
         '<div class="stat"><b>' + practice.dogru + '/' + practice.toplam + '</b><span>Serbest alıştırma (doğru/toplam)</span></div>' +
-        '<div class="stat"><b>' + known + '/' + ACCOUNTS.length + '</b><span>Öğrenilen hesap kartı</span></div>' +
+        '<div class="stat"><b>' + known + '/' + allCards + '</b><span>Öğrenilen kart</span></div>' +
         '<div class="stat"><b>' + (last ? last.d + '/' + last.n : '—') + '</b><span>Son test</span></div>' +
       '</div></section>';
-    $$('#p-ozet [data-campus]').forEach((s) => { s.innerHTML = Object.entries(CAMPUS).map(([k, cc]) => '<option value="' + k + '">' + esc(cc.label) + '</option>').join(''); s.value = campusKey; });
+    syncCampus($('#p-ozet'));
   }
 
   /* ---------- 16. KONU NOTLARI ---------- */
@@ -1106,7 +1144,7 @@ table.jr tr.x td{font-style:italic;color:var(--ink-3);font-size:.85rem;border-bo
       '<div><button type="button" class="linkbtn small" data-go="notlar">← Konu notları</button></div>' +
       '<header class="stack"><h1>' + esc(tp.t) + '</h1>' + (wk.length ? '<p class="small muted">Genel Muhasebe I · ' + esc(camp().label) + ': ' + wk.join(', ') + '. hafta</p>' : '') + '</header>' +
       '<article class="prose">' + renderBlocks(tp.b) + '</article>' +
-      (accs.length ? '<section class="stack"><h2>Bu konunun hesapları</h2><ul class="list">' + accs.map((a) => '<li class="row between"><span><span class="mono">' + a.code + '</span> ' + esc(a.name) + '</span><span class="tag ' + (a.up === 'B' ? 'b' : 'a') + '">' + (a.up === 'B' ? 'Borçta artar' : 'Alacakta artar') + '</span></li>').join('') + '</ul></section>' : '') +
+      (accs.length ? '<section class="stack"><h2>Bu konunun hesapları</h2><ul class="list">' + accs.map((a) => '<li class="row between" style="padding:4px 0"><button type="button" class="linkbtn" data-hesap="' + a.code + '"><span class="mono" style="margin-right:8px">' + a.code + '</span>' + esc(a.name) + '</button><span class="tag ' + (a.up === 'B' ? 'b' : 'a') + '">' + (a.up === 'B' ? 'Borçta artar' : 'Alacakta artar') + '</span></li>').join('') + '</ul></section>' : '') +
       (hasPractice ? '<div><button type="button" class="btn primary" data-pratik="' + id + '">Bu konudan alıştırma yap</button></div>' : '') +
       '<nav class="row between" aria-label="Konular arası">' + (prev ? '<button type="button" class="btn small" data-konu="' + prev + '">← ' + esc(TOPICS[prev].t) + '</button>' : '<span></span>') +
         (next ? '<button type="button" class="btn small" data-konu="' + next + '">' + esc(TOPICS[next].t) + ' →</button>' : '') + '</nav>';
@@ -1132,15 +1170,17 @@ table.jr tr.x td{font-style:italic;color:var(--ink-3);font-size:.85rem;border-bo
     $('#accQ').value = accFilter.q; $('#accCls').value = accFilter.cls;
     drawAccounts();
   }
+  let accSearch = null;
   function drawAccounts() {
     const q = trLower(accFilter.q.trim());
-    const list = ACCOUNTS.filter((a) => (!accFilter.cls || a.cls === accFilter.cls) && (!q || trLower(a.code + ' ' + a.name + ' ' + a.text).includes(q)));
+    if (q && !accSearch) accSearch = new Map(ACCOUNTS.map((a) => [a.code, trLower(a.code + ' ' + a.name + ' ' + a.text)]));
+    const list = ACCOUNTS.filter((a) => (!accFilter.cls || a.cls === accFilter.cls) && (!q || accSearch.get(a.code).includes(q)));
     if (!list.length) { $('#accList').innerHTML = '<p class="muted">Sonuç yok.</p>'; return; }
     let html = '', lastGrp = '';
     list.forEach((a) => {
       if (a.grp !== lastGrp) { html += '<h3 style="margin-top:18px">' + a.grp + ' ' + esc(GROUPS[a.grp] || '') + '<span class="small muted" style="font-weight:400"> · ' + a.cls + ' ' + esc(CLASSES[a.cls]) + '</span></h3>'; lastGrp = a.grp; }
       const wk = weeksOfTopic(a.topic);
-      html += '<details class="acct"><summary><span class="code">' + a.code + '</span><span style="flex:1">' + esc(a.name) + '</span><span class="tag ' + (a.up === 'B' ? 'b' : 'a') + '">' + (a.up === 'B' ? 'B' : 'A') + '</span></summary>' +
+      html += '<details class="acct" id="acc-' + a.code + '"' + (q === a.code ? ' open' : '') + '><summary><span class="code">' + a.code + '</span><span style="flex:1">' + esc(a.name) + '</span><span class="tag ' + (a.up === 'B' ? 'b' : 'a') + '" title="' + (a.up === 'B' ? 'Borç tarafında artar' : 'Alacak tarafında artar') + '"><span aria-hidden="true">' + (a.up === 'B' ? 'B' : 'A') + '</span><span class="sr">' + (a.up === 'B' ? 'Borç tarafında artar' : 'Alacak tarafında artar') + '</span></span></summary>' +
         '<div class="body"><p>' + esc(a.text) + '</p><p>Artış: ' + (a.up === 'B' ? 'borç' : 'alacak') + ' · Azalış: ' + (a.up === 'B' ? 'alacak' : 'borç') + ' · Normal bakiye: ' + (a.up === 'B' ? 'borç' : 'alacak') + (a.minus ? ' · Düzenleyici hesap' : '') + '</p>' +
         '<div class="row"><button type="button" class="linkbtn small" data-konu="' + a.topic + '">Konu: ' + esc(TOPICS[a.topic].t) + '</button>' + (wk.length ? '<span class="small muted">(' + wk.join(', ') + '. hafta)</span>' : '') + '</div></div></details>';
     });
@@ -1148,12 +1188,13 @@ table.jr tr.x td{font-style:italic;color:var(--ink-3);font-size:.85rem;border-bo
   }
 
   /* ---------- 18. SÖZLÜK ---------- */
-  const GLOSS_SORTED = GLOSSARY.slice().sort((x, y) => x[0].localeCompare(y[0], 'tr'));
+  let GLOSS_SORTED = null;
   function renderSozluk() {
+    if (!GLOSS_SORTED) { const coll = new Intl.Collator('tr'); GLOSS_SORTED = GLOSSARY.map(([t, d]) => [t, d, trLower(t + ' ' + d)]).sort((x, y) => coll.compare(x[0], y[0])); }
     const page = $('#p-sozluk');
     if (!page.dataset.ready) {
       page.innerHTML = '<header class="stack"><h1>Sözlük</h1><p class="muted">' + GLOSSARY.length + ' terim.</p></header>' +
-        '<label class="f" for="gloQ">Ara<input type="search" id="gloQ" placeholder="Terim ya da açıklamada geçen kelime" autocomplete="off"></label><dl id="gloList" class="list" style="margin:0"></dl>';
+        '<label class="f" for="gloQ">Ara<input type="search" id="gloQ" placeholder="Terim ya da açıklamada geçen kelime" autocomplete="off"></label><dl id="gloList" style="margin:0"></dl>';
       page.dataset.ready = '1';
       $('#gloQ').addEventListener('input', drawGlossary);
     }
@@ -1161,8 +1202,8 @@ table.jr tr.x td{font-style:italic;color:var(--ink-3);font-size:.85rem;border-bo
   }
   function drawGlossary() {
     const q = trLower(($('#gloQ') || { value: '' }).value.trim());
-    const list = GLOSS_SORTED.filter(([t, d]) => !q || trLower(t + ' ' + d).includes(q));
-    $('#gloList').innerHTML = list.length ? list.map(([t, d]) => '<div style="padding:12px 0;border-bottom:1px solid var(--line)"><dt style="font-weight:650">' + esc(t) + '</dt><dd style="margin:4px 0 0;color:var(--ink-2)">' + esc(d) + '</dd></div>').join('') : '<p class="muted">Sonuç yok.</p>';
+    const list = GLOSS_SORTED.filter((g) => !q || g[2].includes(q));
+    $('#gloList').innerHTML = list.length ? list.map(([t, d]) => '<div class="gl"><dt>' + esc(t) + '</dt><dd>' + esc(d) + '</dd></div>').join('') : '<div class="muted" style="padding:12px 0">Sonuç yok.</div>';
   }
 
   /* ---------- 19. YEVMİYE KAYDI: GÖRÜNÜM VE DENETİM ---------- */
@@ -1175,13 +1216,25 @@ table.jr tr.x td{font-style:italic;color:var(--ink-3);font-size:.85rem;border-bo
   const ACC_OPTIONS = '<option value="">Hesap seç</option>' + Object.entries(CLASSES).map(([k, v]) => '<optgroup label="' + k + ' ' + esc(v) + '">' +
     ACCOUNTS.filter((a) => a.cls === k).map((a) => '<option value="' + a.code + '">' + esc(accLabel(a.code)) + '</option>').join('') + '</optgroup>').join('');
   const blankRows = (n = 3) => Array.from({ length: n }, () => ({ a: '', s: '', t: '' }));
-  function entryHtml(key, rows) {
-    return '<div class="entry" data-entry="' + key + '">' + rows.map((r, k) =>
-      '<div class="erow" data-k="' + k + '"><select class="e-acc" id="' + key + '-a' + k + '" aria-label="' + (k + 1) + '. satır hesap">' + ACC_OPTIONS + '</select>' +
+  function rowHtml(key, k, r) {
+    return '<div class="erow" data-k="' + k + '"><select class="e-acc" id="' + key + '-a' + k + '" aria-label="' + (k + 1) + '. satır hesap">' + ACC_OPTIONS + '</select>' +
       '<div class="seg e-side" role="group" aria-label="' + (k + 1) + '. satır taraf"><button type="button" class="b" data-side="B" aria-pressed="' + (r.s === 'B') + '">Borç</button><button type="button" class="a" data-side="A" aria-pressed="' + (r.s === 'A') + '">Alacak</button></div>' +
-      '<input class="e-amt" id="' + key + '-t' + k + '" type="text" inputmode="decimal" autocomplete="off" placeholder="Tutar" aria-label="' + (k + 1) + '. satır tutar" value="' + esc(r.t) + '">' +
-      '<button type="button" class="icon-btn e-del" data-del="' + k + '" aria-label="' + (k + 1) + '. satırı sil">×</button></div>').join('') + '</div>' +
-      '<div class="totals" data-totals="' + key + '"></div>';
+      '<input class="e-amt" id="' + key + '-t' + k + '" type="text" inputmode="decimal" enterkeyhint="done" autocomplete="off" placeholder="Tutar" aria-label="' + (k + 1) + '. satır tutar" value="' + esc(r.t) + '">' +
+      '<button type="button" class="icon-btn e-del" data-del="' + k + '" aria-label="' + (k + 1) + '. satırı sil">×</button></div>';
+  }
+  function entryHtml(key, rows) {
+    return '<div class="entry" data-entry="' + key + '">' + rows.map((r, k) => rowHtml(key, k, r)).join('') + '</div><div class="totals" data-totals="' + key + '"></div>';
+  }
+  // Satır eklenip silinince yalnızca o satır değişir; numaralar ve etiketler yeniden yazılır.
+  function renumber(key) {
+    $$('[data-entry="' + key + '"] .erow').forEach((row, k) => {
+      row.dataset.k = k;
+      const a = $('.e-acc', row), t = $('.e-amt', row), d = $('.e-del', row);
+      a.id = key + '-a' + k; a.setAttribute('aria-label', (k + 1) + '. satır hesap');
+      $('.e-side', row).setAttribute('aria-label', (k + 1) + '. satır taraf');
+      t.id = key + '-t' + k; t.setAttribute('aria-label', (k + 1) + '. satır tutar');
+      d.dataset.del = k; d.setAttribute('aria-label', (k + 1) + '. satırı sil');
+    });
   }
   function fillSelects(key, rows) { $$('[data-entry="' + key + '"] .e-acc').forEach((s, k) => { s.value = rows[k] && ACC[rows[k].a] ? rows[k].a : ''; }); }
   function readRows(key) {
@@ -1234,8 +1287,8 @@ table.jr tr.x td{font-style:italic;color:var(--ink-3);font-size:.85rem;border-bo
   const free = { topic: '', item: null, rows: blankRows(), revealed: false, counted: false, lastId: '' };
   function renderAlistirma() {
     $('#p-alistirma').innerHTML = '<header class="stack"><h1>Alıştırma</h1></header>' +
-      '<div class="tabs" role="tablist"><button type="button" role="tab" data-tab="abc" aria-selected="' + (pracTab === 'abc') + '">ABC Ticaret</button><button type="button" role="tab" data-tab="serbest" aria-selected="' + (pracTab === 'serbest') + '">Serbest alıştırma</button></div>' +
-      '<div id="pracBody" class="stack-lg"></div>';
+      '<div class="tabs" role="tablist"><button type="button" role="tab" id="tab-abc" aria-controls="pracBody" data-tab="abc" aria-selected="' + (pracTab === 'abc') + '">ABC Ticaret</button><button type="button" role="tab" id="tab-serbest" aria-controls="pracBody" data-tab="serbest" aria-selected="' + (pracTab === 'serbest') + '">Serbest alıştırma</button></div>' +
+      '<div id="pracBody" class="stack-lg" role="tabpanel" aria-labelledby="tab-' + pracTab + '"></div>';
     if (pracTab === 'abc') renderAbc(); else renderFree();
   }
   function renderAbc() {
@@ -1243,12 +1296,19 @@ table.jr tr.x td{font-style:italic;color:var(--ink-3);font-size:.85rem;border-bo
     $('#pracBody').innerHTML =
       '<p class="muted">Aralık ayında kurulan ABC Ticaret\'in on kaydı. Tokat program kılavuzundaki Genel Muhasebe I örneğinden alındı; KDV güncel oranla (%20) hesaplandı.</p>' +
       '<div class="steps">' + ABC.map((e, i) => '<button type="button" data-step="' + i + '" class="' + (abcDone[i] ? 'done' : '') + '"' + (i === abcIndex ? ' aria-current="step"' : '') + ' aria-label="' + esc(e.date + ' ' + e.title) + '">' + e.date + '</button>').join('') + '</div>' +
-      '<section class="box stack"><div class="row between"><h2>' + esc(ex.date + ' · ' + ex.title) + '</h2>' + (abcDone[abcIndex] ? '<span class="tag ok">Tamamlandı</span>' : '') + '</div><p>' + esc(ex.q) + '</p>' +
+      '<section class="box stack"><div class="row between"><h2>' + esc(ex.date + ' · ' + ex.title) + '</h2><span id="abcDoneTag">' + (abcDone[abcIndex] ? '<span class="tag ok">Tamamlandı</span>' : '') + '</span></div><p>' + esc(ex.q) + '</p>' +
         entryHtml('abc', rows) +
         '<div class="row"><button type="button" class="btn" data-add="abc">Satır ekle</button><button type="button" class="btn primary" data-check="abc">Kontrol et</button><button type="button" class="btn ghost" data-show="abc">Çözüm</button>' +
-          (abcIndex < ABC.length - 1 ? '<button type="button" class="btn ghost" data-step="' + (abcIndex + 1) + '">Sonraki →</button>' : '') + '</div>' +
-        '<div data-fb="abc" aria-live="polite"></div></section>' + ledgerHtml();
+          (abcIndex < ABC.length - 1 ? '<button type="button" class="btn' + (abcDone[abcIndex] ? '' : ' ghost') + '" data-step="' + (abcIndex + 1) + '" id="abcNext">Sonraki →</button>' : '') + '</div>' +
+        '<div data-fb="abc" aria-live="polite"></div></section><div id="ledger" class="stack-lg">' + ledgerHtml() + '</div>';
     fillSelects('abc', rows); drawTotals('abc');
+  }
+  // Kayıt tamamlanınca yalnızca durum işaretleri ve defter güncellenir.
+  function abcStatus() {
+    $$('.steps [data-step]').forEach((b) => b.classList.toggle('done', !!abcDone[+b.dataset.step]));
+    const tag = $('#abcDoneTag'); if (tag) tag.innerHTML = abcDone[abcIndex] ? '<span class="tag ok">Tamamlandı</span>' : '';
+    const next = $('#abcNext'); if (next) next.classList.toggle('ghost', !abcDone[abcIndex]);
+    const led = $('#ledger'); if (led) led.innerHTML = ledgerHtml();
   }
   function ledgerHtml() {
     const doneList = ABC.filter((_, i) => abcDone[i]);
@@ -1284,7 +1344,7 @@ table.jr tr.x td{font-style:italic;color:var(--ink-3);font-size:.85rem;border-bo
     $('#pracBody').innerHTML =
       '<p class="muted">' + TEMPLATES.length + ' işlem türünden rastgele sorular; tutarlar her seferinde değişir. KDV oranı %20.</p>' +
       '<div class="form"><label class="f" for="freeTopic">Konu<select id="freeTopic"><option value="">Bütün konular</option>' + topics.map((k) => '<option value="' + k + '"' + (k === free.topic ? ' selected' : '') + '>' + esc(TOPICS[k].t) + '</option>').join('') + '</select></label>' +
-        '<div class="f"><span>Sonuç</span><strong class="mono" style="min-height:44px;display:flex;align-items:center">' + practice.dogru + ' doğru / ' + practice.toplam + ' soru</strong></div></div>' +
+        '<div class="f"><span>Sonuç</span><strong class="mono" id="freeScore" style="min-height:44px;display:flex;align-items:center">' + practice.dogru + ' doğru / ' + practice.toplam + ' soru</strong></div></div>' +
       '<section class="box stack"><p>' + esc(free.item.q) + '</p>' + entryHtml('free', free.rows) +
         '<div class="row"><button type="button" class="btn" data-add="free">Satır ekle</button><button type="button" class="btn primary" data-check="free">Kontrol et</button><button type="button" class="btn ghost" data-show="free">Çözüm</button><button type="button" class="btn ghost" data-new>Yeni soru →</button></div>' +
         '<div data-fb="free" aria-live="polite"></div></section>';
@@ -1292,7 +1352,6 @@ table.jr tr.x td{font-style:italic;color:var(--ink-3);font-size:.85rem;border-bo
   }
   const fb = (key, kind, html) => { const el = $('[data-fb="' + key + '"]'); if (el) el.innerHTML = '<div class="note ' + kind + '">' + html + '</div>'; };
   const setRows = (key, rows) => { if (key === 'abc') abcDrafts[abcIndex] = rows; else free.rows = rows; };
-  const rerender = (key) => (key === 'abc' ? renderAbc() : renderFree());
   function runCheck(key) {
     const target = key === 'abc' ? ABC[abcIndex] : free.item;
     const r = checkRows(readRows(key), target.sol, target.kdv);
@@ -1300,10 +1359,10 @@ table.jr tr.x td{font-style:italic;color:var(--ink-3);font-size:.85rem;border-bo
       free.counted = true; practice.toplam += 1;
       if (r.kind === 'ok' && !free.revealed) practice.dogru += 1;
       Store.set('pratik', practice);
+      const sc = $('#freeScore'); if (sc) sc.textContent = practice.dogru + ' doğru / ' + practice.toplam + ' soru';
     }
     if (r.kind !== 'ok') { fb(key, r.kind, r.msg); return; }
-    if (key === 'abc') { abcDone[abcIndex] = true; Store.set('abc', abcDone); }
-    rerender(key);
+    if (key === 'abc' && !abcDone[abcIndex]) { abcDone[abcIndex] = true; Store.set('abc', abcDone); abcStatus(); }
     fb(key, 'ok', '<strong>Doğru.</strong>' + (target.note ? ' ' + esc(target.note) : '') + '<div class="scroll" style="margin-top:8px">' + journalTable(target.sol, null, target.exp) + '</div>');
   }
   function showSolution(key) {
@@ -1315,6 +1374,10 @@ table.jr tr.x td{font-style:italic;color:var(--ink-3);font-size:.85rem;border-bo
     const p = $('#p-alistirma');
     const sync = (key) => { setRows(key, readRows(key)); drawTotals(key); };
     p.addEventListener('input', (e) => { const ent = e.target.closest('[data-entry]'); if (ent) { sync(ent.dataset.entry); $('[data-fb="' + ent.dataset.entry + '"]').innerHTML = ''; } });
+    p.addEventListener('keydown', (e) => {
+      if (e.key !== 'Enter' || !e.target.classList.contains('e-amt')) return;
+      e.preventDefault(); runCheck(e.target.closest('[data-entry]').dataset.entry);
+    });
     p.addEventListener('change', (e) => {
       if (e.target.id === 'freeTopic') { free.topic = e.target.value; newFreeItem(); renderFree(); return; }
       const ent = e.target.closest('[data-entry]'); if (ent) sync(ent.dataset.entry);
@@ -1323,17 +1386,21 @@ table.jr tr.x td{font-style:italic;color:var(--ink-3);font-size:.85rem;border-bo
       const t = e.target.closest('button');
       if (!t || !p.contains(t)) return;
       const d = t.dataset;
-      if (d.tab) { pracTab = d.tab; Store.set('pratikSekme', pracTab); renderAlistirma(); return; }
+      if (d.tab) { if (d.tab !== pracTab) { pracTab = d.tab; Store.set('pratikSekme', pracTab); renderAlistirma(); } return; }
       if (d.side) {
         $$('button', t.parentElement).forEach((b) => b.setAttribute('aria-pressed', String(b === t)));
         const key = t.closest('[data-entry]').dataset.entry; sync(key); $('[data-fb="' + key + '"]').innerHTML = ''; return;
       }
       if (d.del != null) {
-        const key = t.closest('[data-entry]').dataset.entry, rows = readRows(key);
-        if (rows.length <= 2) { fb(key, 'err', 'Bir kayıtta en az iki satır olur.'); return; }
-        rows.splice(+d.del, 1); setRows(key, rows); rerender(key); return;
+        const key = t.closest('[data-entry]').dataset.entry;
+        if ($$('[data-entry="' + key + '"] .erow').length <= 2) { fb(key, 'err', 'Bir kayıtta en az iki satır olur.'); return; }
+        t.closest('.erow').remove(); renumber(key); sync(key); $('[data-fb="' + key + '"]').innerHTML = ''; return;
       }
-      if (d.add) { const rows = readRows(d.add); rows.push({ a: '', s: '', t: '' }); setRows(d.add, rows); rerender(d.add); const s = $$('[data-entry="' + d.add + '"] .e-acc'); s[s.length - 1].focus(); return; }
+      if (d.add) {
+        const ent = $('[data-entry="' + d.add + '"]');
+        ent.insertAdjacentHTML('beforeend', rowHtml(d.add, ent.children.length, { a: '', s: '', t: '' }));
+        sync(d.add); ent.lastElementChild.querySelector('.e-acc').focus(); return;
+      }
       if (d.check) { runCheck(d.check); return; }
       if (d.show) { showSolution(d.show); return; }
       if (t.hasAttribute('data-new')) { newFreeItem(); renderFree(); return; }
@@ -1371,7 +1438,8 @@ table.jr tr.x td{font-style:italic;color:var(--ink-3);font-size:.85rem;border-bo
   function renderTekrar() {
     const tab = Store.get('tekrarSekme', 'test') === 'kart' ? 'kart' : 'test';
     $('#p-tekrar').innerHTML = '<header class="stack"><h1>Tekrar</h1></header>' +
-      '<div class="tabs" role="tablist"><button type="button" role="tab" data-rtab="test" aria-selected="' + (tab === 'test') + '">Test</button><button type="button" role="tab" data-rtab="kart" aria-selected="' + (tab === 'kart') + '">Kartlar</button></div><div id="revBody" class="stack-lg"></div>';
+      '<div class="tabs" role="tablist"><button type="button" role="tab" id="tab-test" aria-controls="revBody" data-rtab="test" aria-selected="' + (tab === 'test') + '">Test</button><button type="button" role="tab" id="tab-kart" aria-controls="revBody" data-rtab="kart" aria-selected="' + (tab === 'kart') + '">Kartlar</button></div>' +
+      '<div id="revBody" class="stack-lg" role="tabpanel" aria-labelledby="tab-' + tab + '"></div>';
     if (tab === 'test') renderTest(); else renderCards();
   }
   function renderTest() {
@@ -1380,7 +1448,7 @@ table.jr tr.x td{font-style:italic;color:var(--ink-3);font-size:.85rem;border-bo
       const hist = quizHist.slice(-5).reverse();
       body.innerHTML = '<p class="muted">Her test 10 sorudan oluşur: yarısı soru bankasından (' + QUESTIONS.length + ' soru), yarısı hesap planı ve KDV üzerine rastgele üretilir.</p>' +
         '<div><button type="button" class="btn primary" data-test-start>Testi başlat</button></div>' +
-        (hist.length ? '<section class="stack"><h2>Son testler</h2><ul class="list">' + hist.map((h) => '<li class="row between"><span>' + esc(new Date(h.t).toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' })) + '</span><span class="mono">' + h.d + '/' + h.n + '</span></li>').join('') + '</ul></section>' : '');
+        (hist.length ? '<section class="stack"><h2>Son testler</h2><ul class="list">' + hist.map((h) => '<li class="row between"><span>' + esc(fDate(new Date(h.t), { day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' })) + '</span><span class="mono">' + h.d + '/' + h.n + '</span></li>').join('') + '</ul></section>' : '');
       return;
     }
     if (test.i >= test.qs.length) {
@@ -1437,7 +1505,7 @@ table.jr tr.x td{font-style:italic;color:var(--ink-3);font-size:.85rem;border-bo
       const t = e.target.closest('button, #theCard');
       if (!t || !p.contains(t)) return;
       const d = t.dataset;
-      if (d.rtab) { Store.set('tekrarSekme', d.rtab); renderTekrar(); return; }
+      if (d.rtab) { if (t.getAttribute('aria-selected') !== 'true') { Store.set('tekrarSekme', d.rtab); renderTekrar(); } return; }
       if (t.hasAttribute('data-test-start')) { test = { qs: makeTest(), i: 0, ans: [] }; renderTest(); return; }
       if (t.hasAttribute('data-test-close')) { test = null; renderTest(); return; }
       if (d.opt != null && test && test.ans[test.i] == null) { test.ans[test.i] = test.qs[test.i].opts[+d.opt]; renderTest(); return; }
@@ -1594,7 +1662,7 @@ table.jr tr.x td{font-style:italic;color:var(--ink-3);font-size:.85rem;border-bo
       const st = past ? '<span class="tag">Geçti</span>' : now ? '<span class="tag ok">Sürüyor</span>' : '<span class="tag' + (n <= 14 ? ' warn' : '') + '">' + (n === 1 ? 'Yarın' : n + ' gün') + '</span>';
       return '<li style="' + (past ? 'opacity:.6' : '') + '"><div class="row between" style="align-items:flex-start"><span class="small mono muted">' + fRange(e.A, e.B) + '</span>' + st + '</div>' +
         '<strong>' + esc(e.t) + '</strong><div class="small muted">' + esc(e.s) + '</div>' +
-        (e.check ? '<label class="row small" style="margin-top:6px;min-height:36px;cursor:pointer" for="chk-' + e.id + '"><input type="checkbox" id="chk-' + e.id + '" data-chk="' + esc(key) + '"' + (checks[key] ? ' checked' : '') + ' style="width:20px;height:20px"> ' + esc(e.check) + '</label>' : '') + '</li>';
+        (e.check ? '<label class="chk" for="chk-' + e.id + '"><input type="checkbox" id="chk-' + e.id + '" data-chk="' + esc(key) + '"' + (checks[key] ? ' checked' : '') + '>' + esc(e.check) + '</label>' : '') + '</li>';
     };
     $('#p-takvim').innerHTML =
       '<header class="stack"><h1>Takvim</h1><p class="muted">TOGÜ ' + esc(YEAR_KEY) + ' genel akademik takvimi (' + srcLink(YEAR.src, 'PDF') + '). İşaretler yalnızca bu cihazda saklanır.</p></header>' +
@@ -1626,24 +1694,43 @@ table.jr tr.x td{font-style:italic;color:var(--ink-3);font-size:.85rem;border-bo
   }
 
   /* ---------- 27. AYARLAR, KAYNAKLAR, VERİ DENETİMİ ---------- */
-  function audit() {
-    const out = [], ok = (t, pass, extra) => out.push({ t, pass: !!pass, extra: extra || '' });
+  // Denetim küçük işlere bölünür ve tarayıcının boş zamanlarında çalışır; ekranı dondurmaz.
+  function auditJobs() {
+    const out = [], jobs = [], ok = (t, pass, extra) => out.push({ t, pass: !!pass, extra: extra || '' });
     const balanced = (sol) => sol.reduce((p, [, s, v]) => p + (s === 'B' ? cents(v) : -cents(v)), 0) === 0 && sol.every(([c, s, v]) => ACC[c] && (s === 'B' || s === 'A') && v > 0);
-    ok('Hesap kodları benzersiz', new Set(ACCOUNTS.map((a) => a.code)).size === ACCOUNTS.length);
-    ok('Her hesabın grubu ve konusu tanımlı', ACCOUNTS.every((a) => GROUPS[a.grp] && TOPICS[a.topic]));
-    const exs = TOPIC_ORDER.flatMap((k) => TOPICS[k].b.filter((x) => x.ex).map((x) => x.ex));
-    ok('Konu notlarındaki örnek kayıtlar denk', exs.every((e) => balanced(e.sol)), exs.length + ' örnek');
-    ok('ABC kayıtları denk', ABC.every((e) => balanced(e.sol)), ABC.length + ' kayıt');
-    const bal = (code) => ABC.slice(0, 9).reduce((p, e) => p + e.sol.filter((l) => l[0] === code).reduce((q, l) => q + (l[1] === 'B' ? l[2] : -l[2]), 0), 0);
-    const m = ABC[9].sol, amtOf = (c, s) => (m.find((l) => l[0] === c && l[1] === s) || [0, 0, 0])[2];
-    ok('ABC KDV mahsubu önceki kayıtlarla tutarlı', bal('191') === amtOf('191', 'A') && -bal('391') === amtOf('391', 'B'), '191: ' + money(bal('191'), 0) + ', 391: ' + money(-bal('391'), 0));
+    jobs.push(() => {
+      ok('Hesap kodları benzersiz', new Set(ACCOUNTS.map((a) => a.code)).size === ACCOUNTS.length);
+      ok('Her hesabın grubu ve konusu tanımlı', ACCOUNTS.every((a) => GROUPS[a.grp] && TOPICS[a.topic]));
+      const exs = TOPIC_ORDER.flatMap((k) => TOPICS[k].b.filter((x) => x.ex).map((x) => x.ex));
+      ok('Konu notlarındaki örnek kayıtlar denk', exs.every((e) => balanced(e.sol)), exs.length + ' örnek');
+      ok('ABC kayıtları denk', ABC.every((e) => balanced(e.sol)), ABC.length + ' kayıt');
+      const bal = (code) => ABC.slice(0, 9).reduce((p, e) => p + e.sol.filter((l) => l[0] === code).reduce((q, l) => q + (l[1] === 'B' ? l[2] : -l[2]), 0), 0);
+      const m = ABC[9].sol, amtOf = (c, s) => (m.find((l) => l[0] === c && l[1] === s) || [0, 0, 0])[2];
+      ok('ABC KDV mahsubu önceki kayıtlarla tutarlı', bal('191') === amtOf('191', 'A') && -bal('391') === amtOf('391', 'B'), '191: ' + money(bal('191'), 0) + ', 391: ' + money(-bal('391'), 0));
+    });
     let tplOk = true, n = 0;
-    TEMPLATES.forEach((t) => { for (let i = 0; i < 30; i++) { const g = t.gen(); n++; if (!balanced(g.sol) || !g.sol.every((l) => Number.isInteger(l[2])) || checkRows(g.sol.map(([a, s, v]) => ({ a, s, t: String(v) })), g.sol, g.kdv).kind !== 'ok') tplOk = false; } });
-    ok('Alıştırma şablonları denk ve denetimden geçiyor', tplOk, TEMPLATES.length + ' şablon, ' + n + ' örnek');
-    ok('Soru bankası seçenekleri tutarlı', QUESTIONS.every((q) => q.w.length === 3 && !q.w.includes(q.a) && new Set(q.w).size === 3), QUESTIONS.length + ' soru');
+    TEMPLATES.forEach((t) => jobs.push(() => { for (let i = 0; i < 20; i++) { const g = t.gen(); n++; if (!balanced(g.sol) || !g.sol.every((l) => Number.isInteger(l[2])) || checkRows(g.sol.map(([a, s, v]) => ({ a, s, t: String(v) })), g.sol, g.kdv).kind !== 'ok') tplOk = false; } }));
+    jobs.push(() => {
+      ok('Alıştırma şablonları denk ve denetimden geçiyor', tplOk, TEMPLATES.length + ' şablon, ' + n + ' örnek');
+      ok('Soru bankası seçenekleri tutarlı', QUESTIONS.every((q) => q.w.length === 3 && !q.w.includes(q.a) && new Set(q.w).size === 3), QUESTIONS.length + ' soru');
+    });
     let genOk = true;
-    for (let i = 0; i < 300; i++) { const g = pick(GEN)(); if (!g.opts.includes(g.a) || new Set(g.opts).size !== g.opts.length || g.opts.length < 2) genOk = false; }
-    ok('Üretilen test soruları tutarlı', genOk, '300 örnek');
+    for (let j = 0; j < 4; j++) jobs.push(() => { for (let i = 0; i < 50; i++) { const g = pick(GEN)(); if (!g.opts.includes(g.a) || new Set(g.opts).size !== g.opts.length || g.opts.length < 2) genOk = false; } });
+    jobs.push(() => ok('Üretilen test soruları tutarlı', genOk, '200 örnek'));
+    jobs.push(() => auditRest(ok));
+    return { jobs, out };
+  }
+  function runAudit(done) {
+    const { jobs, out } = auditJobs();
+    let i = 0;
+    const step = (dl) => {
+      const t0 = performance.now();
+      do { jobs[i++](); } while (i < jobs.length && (dl && dl.timeRemaining ? dl.timeRemaining() > 6 : performance.now() - t0 < 8));
+      if (i < jobs.length) idle(step); else done(out);
+    };
+    idle(step);
+  }
+  function auditRest(ok) {
     const yr = TAKVIMLER[YEAR_KEY];
     const sorted = (arr) => arr.every((d, i) => i === 0 || D(arr[i - 1]) < D(d));
     ok('Takvim haftaları sıralı ve 14\'er hafta', ['guz', 'bahar'].every((t) => yr[t].weeks.length === 14 && sorted(yr[t].weeks) && yr[t].weeks.every((w) => D(w).getDay() === 1)), YEAR_KEY);
@@ -1651,44 +1738,144 @@ table.jr tr.x td{font-style:italic;color:var(--ink-3);font-size:.85rem;border-bo
     ok('Kampüs planları 14 hafta ve konuları tanımlı', Object.values(CAMPUS).every((c) => c.weeks.length === 14 && c.weeks.every((w) => w.k.every((k) => TOPICS[k]))));
     ok('Sözlük terimleri benzersiz', new Set(GLOSSARY.map((g) => g[0])).size === GLOSSARY.length, GLOSSARY.length + ' terim');
     ok('Kaynak kimlikleri tanımlı', Object.values(CAMPUS).every((c) => SOURCES.some((s) => s.id === c.src)) && YEAR_KEYS.every((k) => SOURCES.some((s) => s.id === TAKVIMLER[k].src)));
-    return out;
   }
+  let auditCache = null, auditRunning = false;
+  const idle = (f) => (window.requestIdleCallback ? window.requestIdleCallback(f, { timeout: 800 }) : setTimeout(f, 60));
   function renderHakkinda() {
     const t = Store.get('tema', 'system');
     $('#p-hakkinda').innerHTML =
       '<header><h1>Ayarlar ve kaynaklar</h1></header>' +
       '<section class="stack"><h2>Ayarlar</h2><div class="form"><label class="f" for="campusSet">Kampüs<select id="campusSet" data-campus></select></label>' +
-        '<label class="f" for="themeSel">Tema<select id="themeSel"><option value="system"' + (t !== 'dark' && t !== 'light' ? ' selected' : '') + '>Cihaz ayarı</option><option value="light"' + (t === 'light' ? ' selected' : '') + '>Açık</option><option value="dark"' + (t === 'dark' ? ' selected' : '') + '>Koyu</option></select></label></div>' +
+        '<label class="f" for="themeSel">Tema<select id="themeSel"><option value="system"' + (t !== 'dark' && t !== 'light' ? ' selected' : '') + '>Cihaz ayarı</option><option value="light"' + (t === 'light' ? ' selected' : '') + '>Açık</option><option value="dark"' + (t === 'dark' ? ' selected' : '') + '>Koyu</option></select></label></div></section>' +
+      '<section class="stack"><h2>Yedek</h2><p class="small muted">Çalışma verileri yalnızca bu tarayıcıda saklanır. Telefon ya da tarayıcı değiştirirken yedek dosyası alıp yeni cihazda geri yükleyebilirsin. Geri yükleme, bu cihazdaki çalışma verilerinin yerine yedektekileri koyar.</p>' +
+        '<div class="row"><button type="button" class="btn small" data-backup>Yedek dosyası al</button><button type="button" class="btn small" data-restore>Yedekten geri yükle</button><input type="file" id="restoreFile" class="file-in" tabindex="-1" aria-hidden="true" accept=".json,application/json"></div><div id="backupMsg" aria-live="polite"></div>' +
         '<div class="row" id="resetBox"><button type="button" class="btn ghost small" data-wipe>Çalışma verilerini sıfırla</button></div></section>' +
       '<section class="stack"><h2>Kaynaklar</h2><ul class="list">' + SOURCES.map((s) => '<li><a href="' + esc(s.url) + '" target="_blank" rel="noopener">' + esc(s.title) + '</a><div class="small muted">' + esc(s.org) + '</div><div class="small">' + esc(s.note) + '</div></li>').join('') + '</ul>' +
         '<p class="small muted">Bağlantılar 29 Eylül 2026\'da denetlendi. Mizan bir çalışma aracıdır; ders planı, takvim ve sınav kuralları için program kılavuzu, akademik takvim ve dersin hocasının duyuruları esastır.</p></section>' +
-      '<section class="stack"><h2>Veri denetimi</h2><ul class="list" id="auditList"><li class="small muted">Hesaplanıyor…</li></ul></section>' +
-      '<p class="small muted">Mizan 1.0.0 · Uygulama tek bir HTML dosyasıdır; internet bağlantısı olmadan da çalışır.</p>';
-    $$('#p-hakkinda [data-campus]').forEach((s) => { s.innerHTML = Object.entries(CAMPUS).map(([k, cc]) => '<option value="' + k + '">' + esc(cc.label) + '</option>').join(''); s.value = campusKey; });
-    setTimeout(() => { const list = $('#auditList'); if (!list) return; const r = audit(); list.innerHTML = r.map((x) => '<li class="row between"><span>' + esc(x.t) + (x.extra ? '<br><span class="small muted">' + esc(x.extra) + '</span>' : '') + '</span><span class="tag ' + (x.pass ? 'ok' : 'warn') + '">' + (x.pass ? 'Geçti' : 'Sorun var') + '</span></li>').join(''); }, 0);
+      '<section class="stack"><h2>Veri denetimi</h2><p class="small muted">Uygulamadaki kayıtların, soruların ve takvimin kendi içinde tutarlı olduğunu denetler.</p><ul class="list" id="auditList"><li class="small muted">Hesaplanıyor…</li></ul></section>' +
+      '<p class="small muted">Mizan ' + VERSION + ' · Tek bir HTML dosyası; internet bağlantısı olmadan da çalışır.</p>';
+    syncCampus($('#p-hakkinda'));
+    const paint = () => { const list = $('#auditList'); if (list) list.innerHTML = auditCache.map((x) => '<li class="row between"><span>' + esc(x.t) + (x.extra ? '<br><span class="small muted">' + esc(x.extra) + '</span>' : '') + '</span><span class="tag ' + (x.pass ? 'ok' : 'warn') + '">' + (x.pass ? 'Geçti' : 'Sorun var') + '</span></li>').join(''); };
+    if (auditCache) paint(); else if (!auditRunning) { auditRunning = true; runAudit((out) => { auditCache = out; auditRunning = false; paint(); }); }
+    const msg = sessionStorage.getItem('mizan_yedekMesaj');
+    if (msg) { $('#backupMsg').innerHTML = '<div class="note ok">' + esc(msg) + '</div>'; try { sessionStorage.removeItem('mizan_yedekMesaj'); } catch (e) { /* oturum deposu kapalı */ } }
   }
   const WIPE_KEYS = ['abc', 'abcIndex', 'pratik', 'pratikSekme', 'quiz', 'kartlar', 'deste', 'tekrarSekme', 'gno', 'checks'];
+  const BACKUP_KEYS = WIPE_KEYS.concat(['campus', 'tema', 'tanitim']);
   function wipe() {
     WIPE_KEYS.forEach((k) => Store.del(k));
     abcDone = {}; abcIndex = 0; practice = { dogru: 0, toplam: 0 }; quizHist = []; boxes = {}; checks = {}; test = null; card = null;
     gnoRows = [{ n: 'Genel Muhasebe I', k: '', h: 'CC' }, { n: '', k: '', h: 'CC' }];
-    Object.keys(abcDrafts).forEach((k) => delete abcDrafts[k]); free.item = null;
+    pracTab = 'abc'; deckKey = 'hesap';
+    Object.keys(abcDrafts).forEach((k) => delete abcDrafts[k]); free.item = null; free.topic = '';
+  }
+  function backup() {
+    const veri = {};
+    BACKUP_KEYS.forEach((k) => { try { const v = localStorage.getItem('mizan_' + k); if (v != null) veri[k] = v; } catch (e) { /* depolama kapalı */ } });
+    const gun = new Date().toISOString().slice(0, 10);
+    const blob = new Blob([JSON.stringify({ uygulama: 'Mizan', surum: VERSION, tarih: gun, veri }, null, 2)], { type: 'application/json' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob); a.download = 'mizan-yedek-' + gun + '.json';
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+    $('#backupMsg').innerHTML = '<div class="note info">Yedek dosyası indirildi: ' + esc(a.download) + '</div>';
+  }
+  function restore(file) {
+    const out = (kind, m) => { $('#backupMsg').innerHTML = '<div class="note ' + kind + '">' + esc(m) + '</div>'; };
+    if (!file) return;
+    if (file.size > 1e6) { out('err', 'Dosya çok büyük; Mizan yedeği değil.'); return; }
+    const r = new FileReader();
+    r.onload = () => {
+      let d;
+      try { d = JSON.parse(r.result); } catch (e) { out('err', 'Dosya okunamadı; geçerli bir JSON dosyası değil.'); return; }
+      if (!d || d.uygulama !== 'Mizan' || !d.veri || typeof d.veri !== 'object') { out('err', 'Bu dosya bir Mizan yedeği değil.'); return; }
+      // Sonuç yedeğin alındığı andaki durumdur: yedekte olmayan ya da bozuk çalışma verisi silinir. Kampüs ve tema yedekte yoksa korunur.
+      let n = 0;
+      BACKUP_KEYS.forEach((k) => {
+        const v = d.veri[k];
+        let ok = false;
+        if (typeof v === 'string') { try { JSON.parse(v); localStorage.setItem('mizan_' + k, v); ok = true; n++; } catch (e) { /* bozuk alan atlanır */ } }
+        if (!ok && WIPE_KEYS.includes(k)) Store.del(k);
+      });
+      try { sessionStorage.setItem('mizan_yedekMesaj', 'Yedek geri yüklendi (' + n + ' kayıt, ' + (d.tarih || 'tarih yok') + ').'); } catch (e) { /* oturum deposu kapalı */ }
+      location.hash = 'hakkinda'; location.reload();
+    };
+    r.onerror = () => out('err', 'Dosya okunamadı.');
+    r.readAsText(file);
+  }
+
+  /* ---------- 27b. NASIL KULLANILIR ---------- */
+  function renderNasil() {
+    const sec = (h, body) => '<section class="stack"><h2>' + h + '</h2>' + body + '</section>';
+    $('#p-nasil').innerHTML =
+      '<header class="stack"><h1>Nasıl kullanılır</h1><p class="muted">Mizan, TOGÜ Muhasebe ve Vergi Uygulamaları programının ilk dönemi için hazırlanmış bir çalışma uygulamasıdır. Hesap açmak gerekmez; bütün çalışma verileri bu cihazda saklanır. İnternet bağlantısı olmadan da çalışır.</p></header>' +
+      sec('İlk açılışta', '<p>Özet sayfasından kampüsünü seç: Tokat merkez ya da Niksar. Genel Muhasebe I\'in haftalık sırası, ders kodları ve not oranları seçime göre değişir. Seçim daha sonra Ayarlar ve kaynaklar sayfasından da değiştirilebilir.</p>') +
+      sec('Özet', '<p>Bugünün tarihine göre dönemi ve haftayı, Genel Muhasebe I\'in o haftaki konusunu, yaklaşan kayıt ve sınav tarihlerini ve çalışma durumunu gösterir.</p>') +
+      sec('Konu notları', '<p>Genel Muhasebe I\'in ' + TOPIC_ORDER.length + ' konusu haftalık plana göre sıralanır. Her konuda kısa açıklamalar, tablolar, örnek yevmiye kayıtları ve o konunun hesapları vardır. Hesaba dokununca hesap planında açılır; konu sayfasının sonundaki düğme aynı konudan alıştırma getirir.</p>') +
+      sec('Yevmiye kaydı girmek', '<ol><li>Her satırda hesabı seç.</li><li>Borç ya da Alacak tarafını seç.</li><li>Tutarı yaz: 15000 ya da 15.000; kuruş için 15.000,50.</li><li>Gerekirse "Satır ekle" ile satır ekle, × ile sil.</li><li>"Kontrol et" düğmesine bas ya da tutar kutusunda Enter\'a bas.</li></ol>' +
+        '<div class="scroll"><table class="t"><thead><tr><th>Mesaj</th><th>Anlamı</th></tr></thead><tbody>' +
+        '<tr><td>Kayıt denk değil</td><td>Borç ve alacak toplamları farklı.</td></tr>' +
+        '<tr><td>Kayıt denk ama doğru değil</td><td>Toplamlar eşit ama bir hesap, taraf ya da tutar yanlış; hangisi olduğu yazılır.</td></tr>' +
+        '<tr><td>Eski KDV oranı</td><td>KDV %18 ya da %8 ile hesaplanmış; genel oran %20.</td></tr>' +
+        '<tr><td>Doğru</td><td>Kayıt kabul edildi; doğru kayıt tablo olarak gösterilir.</td></tr></tbody></table></div>' +
+        '<p>"Çözüm" düğmesi doğru kaydı gösterir. Serbest alıştırmada çözüm açıldıktan sonra girilen kayıt doğru sayılmaz.</p>') +
+      sec('ABC Ticaret', '<p>Aralık ayında kurulan bir işletmenin on işlemi. Tamamlanan her kayıt büyük defterdeki T hesaplara ve mizana aktarılır; mizanda borç ve alacak toplamları eşit çıkar. Son kayıt KDV mahsubudur ve önceki kayıtlardaki KDV tutarlarından hesaplanır.</p>') +
+      sec('Serbest alıştırma', '<p>' + TEMPLATES.length + ' işlem türünden rastgele sorular; tutarlar her seferinde değişir. Konu seçilirse yalnızca o konudan soru gelir. İlk geçerli deneme puana sayılır.</p>') +
+      sec('Tekrar', '<p><strong>Test:</strong> 10 soru. Cevaptan sonra açıklama gelir; sonunda yanlış cevaplar doğrularıyla listelenir.</p><p><strong>Kartlar:</strong> Karta dokununca cevap görünür; "Biliyordum" ya da "Bilmiyordum" seçilir. Bilinen kartlar daha seyrek gelir; üst üste dört kez bilinen kart öğrenilmiş sayılır.</p>') +
+      sec('Hesap araçları', '<ul><li>Final notu: ara sınav ve ödev notuna göre dersi geçmek için gereken en düşük final notu.</li><li>Ortalama: harf notu ve krediye göre dönem ortalaması.</li><li>KDV: dahil tutardan matrah, hariç tutardan KDV.</li><li>Basit faiz, maliyet ve kâr, amortisman tablosu.</li></ul>') +
+      sec('Takvim', '<p>TOGÜ akademik takvimindeki kayıt, muafiyet, sınav, bayram ve telafi tarihleri. Kutular yalnızca bu cihazda işaretlenir. Takvimin süresi dolduğunda Mizan bunu belirtir; yeni takvim eklenene kadar TOGÜ\'nün sayfasına bakılmalıdır.</p>') +
+      sec('Telefona kurmak', '<p>Mizan\'ın internet adresini telefonda aç. Android\'de Chrome menüsünden "Uygulamayı yükle" ya da "Ana ekrana ekle"yi, iPhone\'da Safari\'de Paylaş → "Ana Ekrana Ekle"yi seç. Kurulduktan sonra internet olmadan da açılır.</p>') +
+      sec('Veriler', '<p>Kayıtlar, test sonuçları, kartlar ve takvim işaretleri yalnızca bu tarayıcıda saklanır; hiçbir sunucuya gönderilmez. Tarayıcı verileri silinirse bunlar da silinir. Ayarlar ve kaynaklar sayfasından yedek alınabilir, yedekten geri yüklenebilir ya da sıfırlanabilir.</p>') +
+      sec('Bilgilerin kaynağı', '<p>Ders planı TOGÜ program kılavuzlarından, tarihler akademik takvimden, mevzuat bilgileri kanun metinlerinden alındı; liste Ayarlar ve kaynaklar sayfasında. Mizan resmî bir kaynak değildir: ders planı ve sınav kuralları için program kılavuzu, akademik takvim ve dersin hocasının duyuruları esastır.</p>') +
+      '<div class="row"><button type="button" class="btn primary" data-go="ozet">Özet\'e dön</button><button type="button" class="btn" data-go="alistirma">Alıştırmaya geç</button></div>';
   }
 
   /* ---------- 28. BAŞLAT ---------- */
-  function renderAll() {
-    renderNav(); paintTheme();
-    renderOzet(); renderNotlar(); renderAlistirma(); renderTekrar(); renderHesaplar(); renderSozluk(); renderAraclar(); renderTakvim(); renderDersler(); renderDiger(); renderHakkinda();
-    paintTheme();
+  // Sayfalar yalnızca açıldıklarında çizilir; durum değişince "kirli" işaretlenir.
+  const RENDER = { ozet: renderOzet, notlar: renderNotlar, alistirma: renderAlistirma, tekrar: renderTekrar, hesaplar: renderHesaplar, sozluk: renderSozluk,
+    araclar: renderAraclar, takvim: renderTakvim, dersler: renderDersler, diger: renderDiger, nasil: renderNasil, hakkinda: renderHakkinda };
+  const dirty = new Set(Object.keys(RENDER));
+  function ensure(page) { if (RENDER[page] && (dirty.has(page) || page === 'ozet')) { RENDER[page](); dirty.delete(page); } }
+  function refresh() { Object.keys(RENDER).forEach((k) => dirty.add(k)); syncCampus(); paintTheme(); go(current, currentArg, false); prewarm(); }
+  // Açılıştan sonra tarayıcı boştayken sayfalar görünmeden hazırlanır ve bir kez yerleştirilir.
+  // Gizli sayfa çizim durumunu koruduğu için ilk ziyaret de beklemesiz olur.
+  const PREWARM = ['notlar', 'alistirma', 'tekrar', 'hesaplar', 'araclar', 'takvim', 'dersler', 'sozluk', 'diger', 'nasil', 'hakkinda'];
+  let prewarmTimer = 0;
+  function prewarm() {
+    if (!(window.CSS && CSS.supports && CSS.supports('content-visibility', 'hidden'))) return;
+    if (navigator.deviceMemory && navigator.deviceMemory < 1) return;
+    clearTimeout(prewarmTimer);
+    let i = 0, bekleyen = null;
+    const step = () => {
+      if (document.hidden) { prewarmTimer = setTimeout(() => idle(step), 1000); return; }
+      if (bekleyen) {
+        const el = $('#p-' + bekleyen); bekleyen = null;
+        if (el.hidden) { el.classList.add('isin'); void el.offsetHeight; el.classList.remove('isin'); }
+        idle(step); return;
+      }
+      while (i < PREWARM.length && (!dirty.has(PREWARM[i]) || PREWARM[i] === current)) i++;
+      if (i >= PREWARM.length) return;
+      bekleyen = PREWARM[i++]; ensure(bekleyen); idle(step);
+    };
+    prewarmTimer = setTimeout(() => idle(step), 1200);
   }
-  function refresh() { renderAll(); go(current, currentArg, false); }
   document.addEventListener('click', (e) => {
-    const t = e.target.closest('[data-go], [data-konu], [data-pratik], [data-theme-toggle], [data-wipe], [data-wipe-yes], [data-wipe-no]');
+    const t = e.target.closest('[data-go], [data-konu], [data-pratik], [data-hesap], [data-theme-toggle], [data-skip], [data-intro-close], [data-backup], [data-restore], [data-wipe], [data-wipe-yes], [data-wipe-no]');
     if (!t) return;
+    const d = t.dataset;
     if (t.hasAttribute('data-theme-toggle')) { setTheme(currentTheme() === 'dark' ? 'light' : 'dark'); return; }
-    if (t.dataset.go) { e.preventDefault(); if (['ozet', 'notlar', 'takvim'].includes(t.dataset.go)) { renderOzet(); renderNotlar(); renderTakvim(); } go(t.dataset.go); return; }
-    if (t.dataset.konu) { go('konu', t.dataset.konu); return; }
-    if (t.dataset.pratik) { free.topic = t.dataset.pratik; pracTab = 'serbest'; Store.set('pratikSekme', pracTab); newFreeItem(); renderAlistirma(); go('alistirma'); return; }
+    if (t.hasAttribute('data-skip')) { e.preventDefault(); $('#main').focus(); return; }
+    if (d.go) { e.preventDefault(); go(d.go); return; }
+    if (d.konu) { go('konu', d.konu); return; }
+    if (d.pratik) { free.topic = d.pratik; pracTab = 'serbest'; Store.set('pratikSekme', pracTab); newFreeItem(); dirty.add('alistirma'); go('alistirma'); return; }
+    if (d.hesap) {
+      accFilter = { q: d.hesap, cls: '' }; dirty.add('hesaplar'); go('hesaplar');
+      const el = $('#acc-' + d.hesap); if (el) el.scrollIntoView({ block: 'center' });
+      return;
+    }
+    if (t.hasAttribute('data-intro-close')) { Store.set('tanitim', 1); const box = $('#introBox'); if (box) box.remove(); return; }
+    if (t.hasAttribute('data-backup')) { backup(); return; }
+    if (t.hasAttribute('data-restore')) { $('#restoreFile').click(); return; }
     if (t.hasAttribute('data-wipe')) { $('#resetBox').innerHTML = '<span class="small">ABC kayıtları, alıştırma sonuçları, testler, kartlar, ortalama ve takvim işaretleri silinsin mi?</span><button type="button" class="btn small" data-wipe-yes>Sil</button><button type="button" class="btn ghost small" data-wipe-no>Vazgeç</button>'; return; }
     if (t.hasAttribute('data-wipe-yes')) { wipe(); refresh(); $('#resetBox').insertAdjacentHTML('beforeend', '<span class="small muted">Silindi.</span>'); return; }
     if (t.hasAttribute('data-wipe-no')) renderHakkinda();
@@ -1696,6 +1883,7 @@ table.jr tr.x td{font-style:italic;color:var(--ink-3);font-size:.85rem;border-bo
   document.addEventListener('change', (e) => {
     if (e.target.matches('[data-campus]')) { campusKey = CAMPUS[e.target.value] ? e.target.value : 'tokat'; Store.set('campus', campusKey); refresh(); return; }
     if (e.target.id === 'themeSel') { setTheme(e.target.value); return; }
+    if (e.target.id === 'restoreFile') { restore(e.target.files && e.target.files[0]); e.target.value = ''; return; }
     if (e.target.matches('[data-chk]')) { checks[e.target.dataset.chk] = e.target.checked; Store.set('checks', checks); }
   });
   const onHash = () => { const [p, a] = parseHash(); if (p !== current || a !== currentArg) go(p, a, false); };
@@ -1709,9 +1897,11 @@ table.jr tr.x td{font-style:italic;color:var(--ink-3);font-size:.85rem;border-bo
   });
   if (mqDark && mqDark.addEventListener) mqDark.addEventListener('change', paintTheme);
   bindPractice(); bindTekrar(); bindAraclar();
-  renderAll();
+  renderNav(); paintTheme();
   const [p0, a0] = parseHash();
   go(p0, a0, false);
+  try { performance.mark('mizan-hazir'); } catch (e) { /* ölçüm desteklenmiyor */ }
+  prewarm();
   if ('serviceWorker' in navigator && /^https?:$/.test(location.protocol)) {
     window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js').catch(() => { /* çerçeve ya da yerel dosya: çevrimdışı önbellek yok */ }); });
   }
